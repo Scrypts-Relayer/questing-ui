@@ -1,3 +1,7 @@
+html {
+  background: #F8F9FA;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -11,4 +15,16 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.Quest {
+  margin: 20px auto;
+}
+
+.Search {
+  margin: 20px auto;
+}
+
+.Footer {
+  padding: 10px;
 }
