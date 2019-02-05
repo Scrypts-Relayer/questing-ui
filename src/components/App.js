@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Web3 from 'web3';
 import { Container, Row, Col,
   Collapse,
   Navbar,
@@ -10,6 +11,9 @@ import { Container, Row, Col,
 
 import Footer from './Footer';
 import Page from './Page';
+
+import { address, abi } from '../assets/contract';
+import { setupWeb3 } from '../services/services';
 
 class App extends Component {
   constructor(props) {
@@ -24,15 +28,39 @@ class App extends Component {
       pageDict = 1
     }
     this.state = {
+      isConnected : true,
+      web3 : null,
+      contract : null,
+      account : null,
       isOpen: false,
       page: pageDict // 1:Quest, 2:Create, 3:About
     };
   }
+
+  async componentWillMount() {
+    await setupWeb3(this);
+    const contract = new this.state.web3.eth.Contract(abi, address);
+    let accounts = []
+    this.state.web3.eth.getAccounts().then(res => {
+      accounts = res;
+      this.setState({
+        contract,
+        account : accounts[0],
+      })
+    })
+  }
+
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
     });
   }
+  /*
+  *
+  * THIS FUNCTION WILL BE MOVED TO SERVICES
+  * THIS FUNCTION IS HERE RN JUST TO HELP YOU DEVELOP, @IAN
+  *
+  */
   getQuests = () => {
     return ["quest to alabama", "nola quest", "i love me some quests quest"]
   }
