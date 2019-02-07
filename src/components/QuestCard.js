@@ -22,11 +22,29 @@ class QuestCard extends Component {
           <h4 id='rwdText'>{this.props.amt} {this.props.rwdName}</h4>
         </div>
         <div className="qcardMiddle">
-          <QuestReqItem />
-          <QuestReqItem />
-          <QuestReqItem />
+          <QuestReqItem 
+            reqName={this.props.reqName}
+            amt={1}
+            active={false}
+            total={1}
+          />
+          <QuestReqItem 
+            reqName={this.props.reqName}
+            amt={0}
+            active={true}
+            total={1}/>
+          <QuestReqItem 
+            reqName={this.props.reqName}
+            amt={0}
+            active={true}
+            total={1}
+          />
         </div>
         <div className="qcardRight">
+          <div className="questSubmit">
+            <h4 className="whiteText">Submit</h4>
+          </div>
+          <p id="questIdText">questID : {this.props.id}</p>
         </div>
       </div>
     );

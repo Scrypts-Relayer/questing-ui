@@ -25,6 +25,20 @@ class Log extends Component {
           <QuestCard 
             amt={10}
             rwdName={'ETH'}
+            reqName={'Crypto Kitties'}
+            id={2}
+          />
+          <QuestCard 
+            amt={10}
+            rwdName={'ETH'}
+            reqName={'Crypto Kitties'}
+            id={2}
+          />
+          <QuestCard 
+            amt={10}
+            rwdName={'ETH'}
+            reqName={'Crypto Kitties'}
+            id={2}
           />
         </div>
       </div>
