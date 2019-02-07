@@ -1,8 +1,40 @@
 $purple : #7231FC;
 $nav-height: 100px;
+$main-font : 'Ubuntu', sans-serif;
+
 
 * {
   margin: 0;
+  font-family: $main-font
+}
+
+h1 {
+  font-size: 40px;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+h3 {
+  color: black;
+  font-weight: 200;
+}
+
+h4 {
+  color: black;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.infoText{
+  color: #01A2FD;
+  font-size: 12px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 .App {
@@ -12,9 +44,107 @@ $nav-height: 100px;
 .nav {
   background-color: $purple;
   height : $nav-height;
+  width: calc(100% - 120px);
+  display: flex;
+  flex-direction: row;
+  color: white;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 60px;
+}
+
+.navSelected{
+  border-bottom: 2px solid white;
+}
+
+#navLeft {
+
+}
+
+#navRight {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 260px;
+}
+
+.log {
   width: 100%;
   display: flex;
   flex-direction: row;
-  
+  justify-content: center;
+  padding-top: 40px;
 }
+
+.questContainer {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 400px;
+  padding-top: 40px;
+}
+
+.questHeader{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+#headerInfoText{
+  margin-left: 10px;
+}
+
+.questCard{
+  height: 200px;
+  width: 90%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.qcardLeft {
+  width: 20%;
+  background-color: #FCFCFF;
+  height: calc(100% - 20px);
+  box-shadow: 0 1px 3px rgba(65, 65, 65, 0.12), 0 1px 2px rgba(0,0,0,0.24);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.qcardMiddle {
+  width: 60%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.qcardRight {
+  width: 20%;
+  height: 100%;
+  border-left: 1px solid #C4C4C4;
+}
+
+
+#rwdText{
+  margin-top: 40px;
+}
+
+.questReqItem{
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  justify-items: center;
+  align-items: center;
+  height: 40px;
+  border: 1px solid grey;
+}
+
 

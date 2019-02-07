@@ -6,6 +6,8 @@ import { address, abi } from '../assets/contract';
 import { setupWeb3 } from '../services/services';
 import Nav from './Nav'
 import Create from './Create';
+import Log from './Log';
+import Faq from './Faq';
 
 class App extends Component {
   constructor(props) {
@@ -49,10 +51,10 @@ class App extends Component {
         <Fragment>
           <div className="App"> 
             <Nav />
-            <Route path="/" exact component={Create} />
-            <Route path="/quests/" exact component={Create} />
+            <Route path="/" exact component={Log} />
+            <Route path="/log" component={Log} />
             <Route path="/create" component={Create} />
-            <Route path="/faq/" component={Create} />
+            <Route path="/faq/" component={Faq} />
           </div>
         </Fragment>
       </Router>
