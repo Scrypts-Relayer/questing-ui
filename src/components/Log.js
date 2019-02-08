@@ -1,17 +1,19 @@
-import React, { Component, Fragment } from "react";
+import React, { Component} from "react";
 import '../App.scss'
 import QuestCard from './QuestCard'
+import {setupWeb3, getPolicies} from '../services/services.js'
 
 class Log extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      web3 : null
     };
   }
 
   async componentWillMount() {
-
+    await setupWeb3(this);
+    getPolicies(this.state.web3);
   }
 
   render() {
@@ -24,7 +26,7 @@ class Log extends Component {
           </div>
           <QuestCard 
             amt={10}
-            rwdName={'ETH'}
+            rwdName={'DAI'}
             reqName={'Crypto Kitties'}
             id={2}
           />

@@ -1,8 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import '../App.scss'
-import Web3 from 'web3';
-import { address_mainnet, address_rinkeby, abi_mainnet, abi_rinkeby } from '../assets/contract';
 import { setupWeb3, setupState } from '../services/services';
 import Nav from './Nav'
 import Create from './Create';

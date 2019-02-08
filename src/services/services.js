@@ -21,6 +21,11 @@ let getContract = (_web3, abi, address) => {
   return new _web3.eth.Contract(abi, address);
 }
 
+let getPolicies = (web3) => {
+  let contract = getContract(web3, CONTRACT.Rinkeby.abi, CONTRACT.Rinkeby.address)
+  
+}
+
 async function setupState(_this) {
   // Source: https://ethereum.stackexchange.com/questions/17207/how-to-detect-if-on-mainnet-or-testnet
   window.web3.version.getNetwork((err, networkId) => {
@@ -47,7 +52,7 @@ async function setupState(_this) {
     const net = networkName;
     const abi = CONTRACT[net].abi
     const address = CONTRACT[net].address
-    if (net == "Unknown") {
+    if (net === "Unknown") {
       alert("Pursuit is only available on Rinkeby testnet or Mainnet!\nPlease switch networks and try again.");
       return;
     }
@@ -63,7 +68,7 @@ async function setupState(_this) {
   })
 }
 
-export { setupWeb3, setupState }
+export { setupWeb3, setupState, getPolicies}
 
 // PASS THIS IN AS PROP IN LIEU OF WEB3PROVIDER ??
 let checkForMetaMask = (net) => {

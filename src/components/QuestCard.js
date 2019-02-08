@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component} from "react";
 import '../App.scss'
 import QuestReqItem from './QuestReqItem'
 
@@ -25,7 +25,7 @@ class QuestCard extends Component {
           <QuestReqItem 
             reqName={this.props.reqName}
             amt={1}
-            active={false}
+            active={true}
             total={1}
           />
           <QuestReqItem 
@@ -35,8 +35,8 @@ class QuestCard extends Component {
             total={1}/>
           <QuestReqItem 
             reqName={this.props.reqName}
-            amt={0}
-            active={true}
+            amt={1}
+            active={false}
             total={1}
           />
         </div>

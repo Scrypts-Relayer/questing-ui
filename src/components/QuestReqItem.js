@@ -47,7 +47,7 @@ class QuestReqItem extends Component {
       ) 
     } else {
       return (
-        <img src={check} className="reqCheck" />
+        <img src={check} alt={''} className="reqCheck" />
       )
     }
   }
@@ -56,7 +56,7 @@ class QuestReqItem extends Component {
     return (
       <div className="questReqItem">
         {this.displayCheck()}
-        <img src={ckimg} className="reqPic" style={{opacity : this.activeStyle()}} />
+        <img src={ckimg} className="reqPic" style={{opacity : this.activeStyle()}} alt={''} />
         <h4 id='reqNameText' style={{opacity : this.activeStyle()}}>{this.props.reqName} ({this.props.amt}/{this.props.total})</h4>
         {this.displayIdInput()}
         <div className="reqSubmit" style={{opacity:this.activeStyle()}}>
