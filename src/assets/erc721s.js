@@ -20,7 +20,7 @@ const ERC721s = {
       'address': '0x8c9b261Faef3b3C2e64ab5E58e04615F8c788099',
       'abi': []
     },
-    'MarbleCards': {
+    'MCS': {
       'name': 'MarbleCards',
       'address': '',
       'abi': []
@@ -68,4 +68,4 @@ const ERC721s = {
   }
 }
 
-export default ERC20s;
+export default ERC721s;

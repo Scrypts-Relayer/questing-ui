@@ -1,20 +1,519 @@
 $purple : #7231FC;
 $nav-height: 100px;
+$main-font : 'Ubuntu', sans-serif;
+
 
 * {
   margin: 0;
+  font-family: $main-font;
+  color : black;
+}
+
+//title
+h1 {
+  font-size: 40px;
+}
+//regular size bold 
+h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+//regular size regular
+h3 {
+  font-size: 18px;
+  font-weight: 400;
+}
+//smaller size regular
+h4 {
+  font-weight: 400;
+  font-size: 16px;
+}
+h6{
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.whiteText {
+  color: white;
+}
+
+.infoText{
+  color: #01A2FD;
+  font-size: 12px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+html, body{
+  background-color:  #FBFBFB;
 }
 
 .App {
-  min-height: 100vw;
+  min-height: calc(100vh-$nav-height);
+  background-color:  #FBFBFB;
 }
 
 .nav {
   background-color: $purple;
   height : $nav-height;
+  width: calc(100% - 120px);
+  display: flex;
+  flex-direction: row;
+  color: white;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 60px;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+}
+
+.navSelected{
+  border-bottom: 2px solid white;
+}
+
+#navRight {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 260px;
+}
+
+.log {
   width: 100%;
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  margin-top: $nav-height;
+}
+
+.questContainer {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 40px;
+}
+
+.questHeader{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+#headerInfoText{
+  margin-left: 10px;
+}
+
+.questCard{
+  height: 140px;
+  width: 90%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: white;
+  margin-bottom: 40px;
+}
+
+.qcardLeft {
+  width: 20%;
+  background-color: #FCFCFF;
+  height: calc(100% - 20px);
+  box-shadow: 0 1px 3px rgba(65, 65, 65, 0.12), 0 1px 2px rgba(0,0,0,0.24);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.qcardMiddle {
+  width: 60%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#rwdText{
+  margin-top: 40px;
+}
+
+.questReqItem{
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  justify-items: center;
+  align-items: center;
+  height: 40px;
+  padding-left: 10%;
+  position: relative;
+}
+
+.reqCheck {
+  top: 10px;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  margin-left: -22px;
+  margin-right: 6px;
+  margin-top: -10px;
+}
+
+.reqPic{
+  width: 30px;
+  height: 30px;
+}
+
+#reqNameText{
+  margin-left: 10px;
+  width: 170px;
+}
+
+.reqIdInput{
+  margin-left: 40px;
+  margin-right: 10px;
+  width: 100px;
+  text-align: center;
+}
+
+.tokenIdtext{
+  margin-left: 40px;
+  margin-right: 15px;
+  width: 100px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.reqSubmit{
+  height: 24px;
+  width: 100px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: blue;
+}
+
+
+.qcardRight {
+  width: 20%;
+  height: 100%;
+  border-left: 1px solid #C4C4C4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.questSubmit{
+  width: 70%;
+  height: 34px;
+  background-color: $purple;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.createPage{
+  padding-top: $nav-height;
+  margin-top: 40px;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 100px;
+
+}
+
+.headerTextCreate{
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.createCard{
+  background-color: white;
+  min-height: 100px;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.createInput{
+  height: 30px;
+  border-radius: 4px;
+  font-size: 18px;
+  outline: none;
+  padding-left: 10px;
+  border : 1px solid rgb(193, 193, 193);
+}
+
+#titleInput{
+  margin-left: 40px;
+  width: 60%;
+}
+
+.createRow{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 90%;
+  padding-left: 10%;
+
+}
+
+.selectHeader{
+  width: 100%;
+  border : 1px solid rgb(193, 193, 193);
+  height: 40px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+}
+
+.selectHeader:hover{
+  cursor: pointer;
+}
+
+.selectDownArrow{
+  position: absolute;
+  right: 10px;
+  width: 20px;
+}
+
+#questIdText{
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+#reqSelect{
+  padding-top: 20px;
+}
+
+.dropDownList{
+  margin-bottom: 40px;
+  margin-left: 10%;
+  width: 70%;
+  margin-left: 5%;
+
+}
+
+.selectOptions{
+  min-height: 100px;
+  width: 100%;
+  margin-top: 1px;
+  border-radius: 6px;
+  border : 1px solid rgb(193, 193, 193);
+  padding-top: 10px;
   
 }
 
+.optionRow{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 10%;
+  margin-bottom: 12px;
+  width: 90%;
+}
+
+.optionRow:hover{
+  background-color: rgb(245, 246, 255);
+  cursor: pointer;
+}
+
+#optionImage{
+  height: 30px;
+}
+
+.thirdOfRow{
+  width: 30%;
+}
+
+.selectedReqItem{
+  width: 70%;
+  margin-left: 5%;
+  border : 1px solid rgb(193, 193, 193);
+  height: 40px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 20px;
+
+}
+
+#selectedItemName{
+  margin-left: 20px;
+}
+
+#xIcon{
+  width: 15px;
+  position: absolute;
+  right: -30px;
+}
+
+#xIcon:hover{
+  cursor: pointer;
+}
+
+#createRule{
+  border: 1px solid #c1c1c1;
+  margin-bottom: 20px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.bottomText{
+  font-size: 16px;
+  color: #c1c1c1;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.submitWrapper{
+  width: 50%;
+  position: relative;
+}
+
+.pageSubmit{
+  width: 200px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: rgb(111, 111, 249);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#page1Submit{
+  position: absolute;
+  right: 0;
+}
+
+.pageSubmit:hover{
+  cursor: pointer;
+}
+
+.prizeSelection{
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 20px;
+  align-items: center;
+  width: 50%;
+  min-height: 500px;
+}
+
+.prizeGrid{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-gap: 20px;
+}
+
+.prizeCard{
+  border: 1px solid rgb(169, 169, 169);
+  border-radius: 8px;
+  padding: 5px;
+  height: 90px;
+  width: 100px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+  
+}
+
+.prizeCard:hover{
+  cursor: pointer;
+  border: 1px solid $purple;
+  background-color: rgb(247, 252, 255);
+}
+
+.prizeTokenTicker{
+  font-weight: 600;
+}
+
+#prizePic{
+  width: 40px;
+  height: 40px;
+}
+
+.amountRow{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  width: 60%;
+  align-self: flex-end;
+}
+
+
+#page2Submit{
+  position: absolute;
+  right: 0;
+  margin-top: 40px;
+}
+
+#previousButton{
+  position: absolute;
+  left: -260px;
+}
+
+#previousButton:hover{
+  cursor: pointer;
+}
+
+///breakpoints
+@media only screen and (max-width: 1100px) {
+  .questContainer{
+    min-width: 800px;
+  }
+
+  .log {
+    min-width: 1300px;
+  }
+
+  .App{
+    background-color: #FCFCFF;
+  }
+
+  .createCard{
+    width: 800px;
+  }
+
+  .createPage{
+    width: 1000px;
+
+  }
+
+}

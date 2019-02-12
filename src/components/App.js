@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import '../App.scss'
-import Web3 from 'web3';
-import { address_mainnet, address_rinkeby, abi_mainnet, abi_rinkeby } from '../assets/contract';
 import { setupWeb3, setupState } from '../services/services';
 import Nav from './Nav'
 import Create from './Create';
+import Log from './Log';
+import Faq from './Faq';
 
 class App extends Component {
   constructor(props) {
@@ -41,10 +41,10 @@ class App extends Component {
         <Fragment>
           <div className="App">
             <Nav />
-            <Route path="/" exact component={Create} />
-            <Route path="/quests/" exact component={Create} />
+            <Route path="/" exact component={Log} />
+            <Route path="/log" component={Log} />
             <Route path="/create" component={Create} />
-            <Route path="/faq/" component={Create} />
+            <Route path="/faq/" component={Faq} />
           </div>
         </Fragment>
       </Router>
