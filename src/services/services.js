@@ -2,6 +2,8 @@ import Web3 from 'web3';
 import React from 'react';
 
 import CONTRACT from '../assets/contract';
+import ERC20s from '../assets/erc20s';
+import ERC721s from '../assets/erc721s';
 
 // async module.exports :
 // https://duckduckgo.com/?q=module+export+asynchronous&ia=web
@@ -158,8 +160,17 @@ let completeQuest = (_this) => {
 *
 */
 
+/*
+ALSO: Ian: we only accept or disburse 721s?
+*/
 
-let approvePursuit = (_state, tokenContract, user, tokenId) => {
+
+let approvePursuit = (_state, tokenTicker, user, tokenId) => {
+  let tokenContract = getContract(
+    _state.web3,
+    ERC721[_state.net][tokenTicker].abi,
+    ERC721[_state.net][tokenTicker].address
+  )
   tokenContract.methods.transferFrom(
     user,
     CONTRACT[_state.net].address,
