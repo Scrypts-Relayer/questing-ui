@@ -19,14 +19,76 @@ async function setupWeb3(_this) {
    }
 }
 
-let getContract = (_web3, abi, address) => {
-  return new _web3.eth.Contract(abi, address);
+async function getContract(_web3, abi, address) {
+  // return new _web3.eth.Contract(abi, address);
+  try {
+    return new _web3.eth.Contract(abi, address);
+  } catch (err) {
+    console.log(err);
+  }
 }
 
-let getPolicies = (web3) => {
-  let contract = getContract(web3, CONTRACT.Rinkeby.abi, CONTRACT.Rinkeby.address)
-  
+async function getQuests(start, _limit, net, _web3) {
+  let output = []
+	try {
+    let contract = await getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address)
+    let totalQuests = await contract.questId.call((err, result) => { return result ? !err : err });
+    // let max = Math.min(_limit, _max)
+    let listedQuests = start;
+    let parsedQuests = start;
+    while (listedQuests < _limit && parsedQuests < totalQuests) {
+      let next = await getAQuest(c, net, _web3)
+      let open = await getQuestStatus(c, contract)
+      if (open) { output.push(next); listedQuests++ }
+      parsedQuests++;
+    }
+	} catch (err) {
+		console.log(err);
+	}
 }
+
+async function getQuestStatus(id, contract) {
+  try {
+		let ans = await contract.questExists.call(id)
+    return ans;
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+async function getAQuest(id, contract) {
+  let output = []
+	try {
+    contract.QUESTS.call(id) => {
+      output.push(result2);
+      c++;
+    })
+		return output;
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+// let getQuests = (net, _web3, start, _limit) => {
+//   let output = []
+//   let contract = getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address)
+//   let _max;
+//   contract.questId.call((err, result) => {
+//     if (!err) { _max = result }
+//   });
+//   let max = Math.min(_limit, _max)
+//   let c = start;
+//   while (c < max) {
+//     contract.questExists.call(c, (err, result) => {
+//       if (result) {
+//         contract.QUESTS.call(c, (err2, result2) => {
+//           output.push(result2);
+//           c++;
+//         })
+//       }
+//     })
+//   }
+// }
 
 async function setupState(_this) {
   // Source: https://ethereum.stackexchange.com/questions/17207/how-to-detect-if-on-mainnet-or-testnet
@@ -173,8 +235,8 @@ ALSO: Ian: we only accept or disburse 721s?
 let approvePursuit = (_state, tokenTicker, user, tokenId) => {
   let tokenContract = getContract(
     _state.web3,
-    ERC721[_state.net][tokenTicker].abi,
-    ERC721[_state.net][tokenTicker].address
+    ERC721s[_state.net][tokenTicker].abi,
+    ERC721s[_state.net][tokenTicker].address
   )
   tokenContract.methods.transferFrom(
     user,
