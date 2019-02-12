@@ -60,7 +60,7 @@ class QuestReqItem extends Component {
         <h4 id='reqNameText' style={{opacity : this.activeStyle()}}>{this.props.reqName} ({this.props.amt}/{this.props.total})</h4>
         {this.displayIdInput()}
         <div className="reqSubmit" style={{opacity:this.activeStyle()}}>
-          <h5 className="whiteText">Submit</h5>
+          <h4 className="whiteText">Submit</h4>
         </div>
       </div>
     );

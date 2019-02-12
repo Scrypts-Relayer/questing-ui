@@ -25,7 +25,7 @@ class SelectedReqItem extends Component {
     return (
       <div className="selectedReqItem">
         <img src={cat} alt={''} id='optionImage' />
-        <p className="selectText" id="selectedItemName">1 {this.props.name}</p>
+        <h3 id="selectedItemName">1 {this.props.name}</h3>
         <img src={xIcon} alt={''} id="xIcon" onClick={this.handleClick}/>
       </div>
       );

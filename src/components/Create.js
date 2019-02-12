@@ -3,13 +3,16 @@ import '../App.scss'
 import DropDownList from './DropDownList.js'
 import SelectedReqItem from './SelectedReq.js'
 import nfts from '../assets/erc721s.js'
+import erc20s from '../assets/erc20s.js'
+import cat from '../assets/img/ck.png'
 
 class Create extends Component {
   constructor(props) {
     super(props);
     this.state = {
       step : 1,
-      selectedReqs : new Set()
+      selectedReqs : new Set(),
+      selectedPrize : null
     };
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this)
@@ -44,6 +47,26 @@ class Create extends Component {
     )
   }
 
+  displayPrizes(){
+    let allTokens = {};
+    for (let item in nfts.Main){
+      allTokens[item] = nfts[item]
+    }
+    for (let item in erc20s.Main){
+      allTokens[item] = erc20s[item]
+    }
+    return (
+      Object.entries(allTokens).map((item)=>{
+        return (
+          <div className="prizeCard" key={item[0]}>
+            <p className="prizeTokenTicker">{item[0]}</p>
+            <img alt={''} src={cat} id="prizePic" />
+          </div>
+        )
+      })
+    )
+  }
+
   add(key){
     const old = this.state.selectedReqs;
     const newSet = old.add(key)
@@ -61,35 +84,34 @@ class Create extends Component {
   }
 
   selectPage() {
-    if(this.state.step == 1){
+    if(this.state.step === 1){
       return (
         <div className="createPage">
           <div className="headerTextCreate">
-            <p className="createNewText">Create New Quest</p>
-            <h6>Step {this.state.step} of 2</h6>
+            <h6 style={{marginRight:"10px"}}>Create New Quest</h6>
+            <h3>Step {this.state.step} of 2</h3>
           </div>
           <div className="createCard">
             <div className="createRow">
-              <h6>Quest Title</h6>
+              <h3>Quest Title</h3>
               <input className="createInput" id="titleInput"/>
             </div>
           </div>
           <div className="createCard" id="reqSelect">
             <div className="createRow">
-              <h6 style={{marginBottom:'20px'}}>Quest Requirements</h6>
+              <h3 style={{marginBottom:'20px'}}>Quest Requirements</h3>
             </div>
               {this.populateSelectedReqs()}
             <div className="createRow">
               <DropDownList add={this.add} />
-              </div>
-            
+            </div>
             <hr id="createRule"/>
             <p className="bottomText">Users must submit each item in order to complete the quest.</p>
           </div>
 
           <div className="submitWrapper">
-            <div className="page1Submit" onClick={this.togglePage}>
-              <p className="whiteSubmitText whiteText">Next Page</p>
+            <div className="pageSubmit" id="page1Submit" onClick={this.togglePage}>
+              <h6 className="whiteText">Next Page</h6>
             </div>
           </div>
         </div>
@@ -98,8 +120,31 @@ class Create extends Component {
       return (
         <div className="createPage">
           <div className="headerTextCreate">
-            <p className="createNewText">Create New Quest</p>
-            <h6>Step {this.state.step} of 2</h6>
+            <div className="" onClick={this.togglePage} id="previousButton">
+              <h4 className="">{'<- Previous'}</h4>
+            </div>
+            <h6 style={{marginRight:"20px"}}>Create New Quest</h6>
+            <h3>Step {this.state.step} of 2</h3>
+          </div>
+          <div className="prizeSelection">
+            <h6>Insert Prize</h6>
+            <p className="bottomText">When you select your prize, it will be hed in escrow white the quest is open.</p>
+            <div className="prizeGrid">
+              <div className="prizeCard">
+                <p className="prizeTokenTicker">REP</p>
+                <img alt={''} src={cat} id="prizePic" />
+              </div>
+              {this.displayPrizes()}
+            </div>
+            <div className="amountRow">
+              <h4 style={{marginRight:"20px"}}>Amount</h4>
+              <input className="createInput" />
+            </div>
+          </div>
+          <div className="submitWrapper">
+            <div className="pageSubmit" onClick={this.togglePage} id="page2Submit">
+              <h6 className="whiteText">Complete</h6>
+            </div>
           </div>
         </div>
       )
@@ -107,7 +152,7 @@ class Create extends Component {
   }
 
   togglePage(){
-    if(this.state.step ==1 ){
+    if(this.state.step===1 ){
       this.setState({
         step : 2
       })

@@ -18,6 +18,9 @@ class DropDownList extends Component {
 
   handleClick = key => e => {
     this.props.add(key)
+    this.setState({
+      active : false
+    })
   }
 
 
@@ -30,10 +33,10 @@ class DropDownList extends Component {
               <img src={cat} alt={''} id='optionImage' />
             </div>
             <div className='thirdOfRow'>
-              <p className="tickerText">{key[0]}</p>
+              <h4>{key[0]}</h4>
             </div>
             <div className='thirdOfRow'>
-              <p className="selectText">{key[1].name}</p>
+              <h4>{key[1].name}</h4>
             </div>
           </div>
           )
@@ -61,7 +64,7 @@ class DropDownList extends Component {
     return (
       <div className="dropDownList">
         <div className="selectHeader" onClick={this.toggleActive}>
-          <p className="selectText">Select Item...</p>
+          <h4>Select Item...</h4>
           <img src={this.state.active ? up : down} alt={''} className="selectDownArrow" />
         </div>
         {this.showDropDown()}

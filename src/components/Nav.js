@@ -6,17 +6,17 @@ const Nav = (props) => {
   return (
     <div className="nav">
       <div id="navLeft">
-        <h1>Pursuit</h1>
+        <h1 className="whiteText">Pursuit</h1>
       </div>
       <div id="navRight">
         <NavLink to="/log" activeClassName="navSelected">
-          <h2>Quest Log</h2>
+          <h2 className="whiteText">Quest Log</h2>
         </NavLink >
         <NavLink to="/create" activeClassName="navSelected">
-          <h2>Create</h2>
+          <h2 className="whiteText">Create</h2>
         </NavLink>
         <NavLink to="/faq" activeClassName="navSelected">
-          <h2>FAQ</h2>
+          <h2 className="whiteText">FAQ</h2>
         </NavLink>
       </div>
     </div>

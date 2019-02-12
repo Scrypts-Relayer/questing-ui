@@ -44,7 +44,7 @@ class QuestCard extends Component {
           <div className="questSubmit">
             <h4 className="whiteText">Submit</h4>
           </div>
-          <p id="questIdText">questID : {this.props.id}</p>
+          <h4 id="questIdText">questID : {this.props.id}</h4>
         </div>
       </div>
     );
