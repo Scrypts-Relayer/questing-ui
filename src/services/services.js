@@ -28,46 +28,60 @@ async function getContract(_web3, abi, address) {
   }
 }
 
-async function getQuests(start, _limit, net, _web3) {
-  let output = []
-	try {
-    let contract = await getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address)
-    let totalQuests = await contract.questId.call((err, result) => { return result ? !err : err });
-    // let max = Math.min(_limit, _max)
-    let listedQuests = start;
-    let parsedQuests = start;
-    while (listedQuests < _limit && parsedQuests < totalQuests) {
-      let next = await getAQuest(c, net, _web3)
-      let open = await getQuestStatus(c, contract)
-      if (open) { output.push(next); listedQuests++ }
-      parsedQuests++;
-    }
-	} catch (err) {
-		console.log(err);
-	}
+/**
+ * Check if user has a specifc token. 
+ * 
+ * Used in log screen to show if they have any of the requirements. 
+ * Also used in create page to show which tokens they own and can 
+ * use as a prize. 
+ */
+async function checkOwnership(_web3, tokenAddress, account, isNFT){
+  
 }
 
-async function getQuestStatus(id, contract) {
-  try {
-		let ans = await contract.questExists.call(id)
-    return ans;
-	} catch (err) {
-		console.log(err);
-	}
-}
 
-async function getAQuest(id, contract) {
-  let output = []
-	try {
-    contract.QUESTS.call(id) => {
-      output.push(result2);
-      c++;
-    })
-		return output;
-	} catch (err) {
-		console.log(err);
-	}
-}
+
+// async function getQuests(start, _limit, net, _web3) {
+//   let output = []
+// 	try {
+//     let contract = await getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address)
+//     let totalQuests = await contract.questId.call((err, result) => { return result ? !err : err });
+//     // let max = Math.min(_limit, _max)
+//     let listedQuests = start;
+//     let parsedQuests = start;
+//     while (listedQuests < _limit && parsedQuests < totalQuests) {
+//       let next = await getAQuest(c, net, _web3)
+//       let open = await getQuestStatus(c, contract)
+//       if (open) { output.push(next); listedQuests++ }
+//       parsedQuests++;
+//     }
+// 	} catch (err) {
+// 		console.log(err);
+// 	}
+// }
+
+// async function getQuestStatus(id, contract) {
+//   try {
+// 		let ans = await contract.questExists.call(id)
+//     return ans;
+// 	} catch (err) {
+// 		console.log(err);
+// 	}
+// }
+
+// async function getAQuest(id, contract) {
+//   let output = []
+// 	try {
+//     contract.QUESTS.call((id) => {
+//       //output.push(result2);
+//       output.push(id);
+//       c++;
+//     })
+// 		return output;
+// 	} catch (err) {
+// 		console.log(err);
+// 	}
+// }
 
 // let getQuests = (net, _web3, start, _limit) => {
 //   let output = []
@@ -132,29 +146,30 @@ async function setupState(_this) {
   })
 }
 
-export { setupWeb3, setupState, getPolicies}
+export { setupWeb3, setupState}
 
-// PASS THIS IN AS PROP IN LIEU OF WEB3PROVIDER ??
-let checkForMetaMask = (net) => {
-  if (net){
-    return (
-      <div className="container">
-      <div className="button" id="b1" onClick={"function"}>
-        <p>Click to increase balance</p>
-      </div>
-      <div className="button" id="b2" onClick={"function"}>
-        <p>Click to get balance</p>
-      </div>
-    </div>
-    )
-  } else {
-    return (
-      <div>
-        <p>Connect to metamask</p>
-      </div>
-    )
-  }
-}
+
+// // PASS THIS IN AS PROP IN LIEU OF WEB3PROVIDER ??
+// let checkForMetaMask = (net) => {
+//   if (net){
+//     return (
+//       <div className="container">
+//       <div className="button" id="b1" onClick={"function"}>
+//         <p>Click to increase balance</p>
+//       </div>
+//       <div className="button" id="b2" onClick={"function"}>
+//         <p>Click to get balance</p>
+//       </div>
+//     </div>
+//     )
+//   } else {
+//     return (
+//       <div>
+//         <p>Connect to metamask</p>
+//       </div>
+//     )
+//   }
+// }
 
 let createQuest = (_this) => {
   this.state.contract.methods.createQuest(

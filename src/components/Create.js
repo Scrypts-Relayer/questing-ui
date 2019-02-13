@@ -10,13 +10,21 @@ class Create extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      step : 1,
+      step : 2,
+      title : '',
       selectedReqs : new Set(),
-      selectedPrize : null
+      selectedPrize : '',
+      titleError : false, 
+      reqError : false,
+      prizeError : false,
+      amtError : false,
+      amount : 0,
+      nftSelected : false
     };
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this)
     this.togglePage = this.togglePage.bind(this)
+    this.completeQuest = this.completeQuest.bind(this)
   }
 
   async componentWillMount() {
@@ -24,27 +32,39 @@ class Create extends Component {
   }
 
   populateSelectedReqs(){
-    let selected = []
-    for(let key in nfts.Main){
-      if(this.state.selectedReqs.has(key)){
-        selected.push(
-          <div className="createRow">
-          <SelectedReqItem 
-            name={nfts.Main[key].name}
-            remove={this.remove}
-            itemKey = {key}
-            key ={''}
-          /></div>
-          )
-      }
-    }
     return (
-      selected.map((item)=> {
-        return (
-          item
-        )
-      })
+      Object.keys(nfts.Main).map((key, i)=> {
+        if(this.state.selectedReqs.has(key)){
+          return(
+            <div className="createRow" key={i}>
+              <SelectedReqItem 
+                name={nfts.Main[key].name}
+                remove={this.remove}
+                itemKey = {key}
+                key ={key}
+                />
+            </div>
+          )
+      }})
     )
+  }
+
+  updateSelectedPrize(key){
+    this.setState({
+      selectedPrize : key,
+      prizeError : false
+    })
+    if(nfts.Main.hasOwnProperty(key)){
+      this.setState({
+        amount : 1,
+        nftSelected : true,
+        amtError : false
+      })
+    } else {
+      this.setState({
+        nftSelected : false
+      })
+    }
   }
 
   displayPrizes(){
@@ -58,7 +78,11 @@ class Create extends Component {
     return (
       Object.entries(allTokens).map((item)=>{
         return (
-          <div className="prizeCard" key={item[0]}>
+          <div 
+            className={this.state.selectedPrize === item[0] ? "prizeCard prizeCardSelected" : "prizeCard"} 
+            key={item[0]} 
+            onClick={(event)=>{this.updateSelectedPrize(item[0])}}
+          >
             <p className="prizeTokenTicker">{item[0]}</p>
             <img alt={''} src={cat} id="prizePic" />
           </div>
@@ -83,6 +107,74 @@ class Create extends Component {
     })
   }
 
+  handleNextPage(){
+
+  }
+
+  validatePageOne() {
+    //reset the state
+    this.setState({
+      titleError : false,
+      reqError : false
+    })
+    let valid = true
+    if (this.state.selectedReqs.size === 0){
+      this.setState({
+        reqError : true
+      })
+      valid = false
+    }
+    if(this.state.title===''){
+      this.setState({
+        titleError : true
+      })
+      valid = false
+    }
+    return valid
+  }
+
+  validatePageTwo(){
+    let valid = true;
+    this.setState({
+      prizeError : false,
+      amtError : false
+    })
+    if(this.state.selectedPrize === ''){
+      this.setState({
+        prizeError : true
+      })
+      valid = false;
+    }
+    if(this.state.amount < 1){
+      this.setState({
+        amtError : true
+      })
+      valid = false;
+    }
+    return valid
+  }
+
+  togglePage(){
+      if(this.state.step===1 ){
+        if(this.validatePageOne()){
+          this.setState({
+            step : 2
+          })
+        }
+      } else {
+        this.setState({
+          step : 1
+        })
+      }
+    
+  }
+
+  completeQuest(){
+    if(this.validatePageTwo()){
+      alert("Quest created")
+    }
+  }
+
   selectPage() {
     if(this.state.step === 1){
       return (
@@ -92,12 +184,19 @@ class Create extends Component {
             <h3>Step {this.state.step} of 2</h3>
           </div>
           <div className="createCard">
+            {this.state.titleError ? <h3 className="errorText" id="titleError">Title must not be empty!</h3> : ''}   
             <div className="createRow">
               <h3>Quest Title</h3>
-              <input className="createInput" id="titleInput"/>
+              <input 
+                className="createInput" 
+                id="titleInput" 
+                onChange={(event) => {this.setState({title : event.target.value})}}
+                value={this.state.title}
+              />
             </div>
           </div>
           <div className="createCard" id="reqSelect">
+          {this.state.reqError ? <h3 className="errorText" id="reqError">You must select at least 1 requirement!</h3> : ''}   
             <div className="createRow">
               <h3 style={{marginBottom:'20px'}}>Quest Requirements</h3>
             </div>
@@ -127,39 +226,33 @@ class Create extends Component {
             <h3>Step {this.state.step} of 2</h3>
           </div>
           <div className="prizeSelection">
+            {this.state.prizeError ? <h3 className="errorText" id="prizeSelectError">You must select a prize.</h3> : ''}
             <h6>Insert Prize</h6>
-            <p className="bottomText">When you select your prize, it will be hed in escrow white the quest is open.</p>
+            <p className="bottomText">When you select your prize, it will be hed in escrow while the quest is open.</p>
             <div className="prizeGrid">
-              <div className="prizeCard">
-                <p className="prizeTokenTicker">REP</p>
-                <img alt={''} src={cat} id="prizePic" />
-              </div>
               {this.displayPrizes()}
             </div>
-            <div className="amountRow">
-              <h4 style={{marginRight:"20px"}}>Amount</h4>
-              <input className="createInput" />
-            </div>
+            {erc20s.Main.hasOwnProperty(this.state.selectedPrize) ? 
+              <div className="amountRow">
+                {this.state.amtError ? <h3 className="errorText" id="amtError">You must enter an amount great than 0.</h3> : ''}
+                <h4 style={{marginRight:"20px"}}>Amount</h4>
+                <input 
+                  className="createInput" 
+                  value={this.state.amount}
+                  type="text" 
+                  onKeyUp={(event)=>{this.setState({amount : event.target.value.replace(/[^\d]+/, '')})}}
+                  onChange={(event)=>{this.setState({amount : event.target.value})}}
+                />
+              </div> 
+            : ''}
           </div>
           <div className="submitWrapper">
-            <div className="pageSubmit" onClick={this.togglePage} id="page2Submit">
+            <div className="pageSubmit" onClick={this.completeQuest} id="page2Submit">
               <h6 className="whiteText">Complete</h6>
             </div>
           </div>
         </div>
       )
-    }
-  }
-
-  togglePage(){
-    if(this.state.step===1 ){
-      this.setState({
-        step : 2
-      })
-    } else {
-      this.setState({
-        step : 1
-      })
     }
   }
 

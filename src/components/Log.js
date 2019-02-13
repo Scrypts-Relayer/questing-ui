@@ -1,7 +1,7 @@
 import React, { Component} from "react";
 import '../App.scss'
 import QuestCard from './QuestCard'
-import {setupWeb3, getPolicies} from '../services/services.js'
+import {setupWeb3} from '../services/services.js'
 
 class Log extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class Log extends Component {
 
   async componentWillMount() {
     await setupWeb3(this);
-    getPolicies(this.state.web3);
+    //getPolicies(this.state.web3);
   }
 
   render() {

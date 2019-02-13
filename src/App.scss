@@ -42,6 +42,11 @@ h6{
   font-size: 12px;
 }
 
+.errorText{
+  color: red;
+  font-size: 14px;
+}
+
 a {
   text-decoration: none;
   color: inherit;
@@ -249,6 +254,7 @@ html, body{
   width: 50%;
   display: flex;
   flex-direction: column;
+  position: relative;
   justify-content: center;
   align-items: flex-start;
   margin-bottom: 40px;
@@ -267,6 +273,18 @@ html, body{
 #titleInput{
   margin-left: 40px;
   width: 60%;
+}
+
+#titleError {
+  position: absolute;
+  top: -30px;
+  left: 0%;
+}
+
+#reqError{
+  position: absolute;
+  top: -30px;
+  left: 0%;
 }
 
 .createRow{
@@ -429,6 +447,7 @@ html, body{
   justify-content: space-around;
   padding: 20px;
   align-items: center;
+  position: relative;
   width: 50%;
   min-height: 500px;
 }
@@ -449,8 +468,9 @@ html, body{
   justify-content: space-around;
   flex-direction: column;
   align-items: center;
-  
 }
+
+
 
 .prizeCard:hover{
   cursor: pointer;
@@ -458,8 +478,25 @@ html, body{
   background-color: rgb(247, 252, 255);
 }
 
+.prizeCardSelected{
+  border: 1px solid $purple;
+  background-color: rgb(215, 212, 254);
+}
+
+.prizeCardSelected:hover{
+  border: 1px solid $purple;
+  background-color: rgb(215, 212, 254);
+
+}
+
 .prizeTokenTicker{
   font-weight: 600;
+}
+
+#prizeSelectError{
+  position: absolute;
+  top: 30px;
+  left: 30px;
 }
 
 #prizePic{
@@ -477,6 +514,10 @@ html, body{
   align-self: flex-end;
 }
 
+#amtError{
+  position: absolute;
+  left: 10%;
+}
 
 #page2Submit{
   position: absolute;
