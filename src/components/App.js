@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import '../App.scss'
-import { setupWeb3, setupState } from '../services/services';
+import { setupWeb3, setupState, getUserBalanceOfERC721 } from '../services/services';
 import Nav from './Nav'
 import Create from './Create';
 import Log from './Log';
@@ -23,6 +23,7 @@ class App extends Component {
   async componentWillMount() {
     await setupWeb3(this);
     await setupState(this);
+    let b = await getUserBalanceOfERC721(this.state.web3);
   }
 
   toggle() {

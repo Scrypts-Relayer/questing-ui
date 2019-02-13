@@ -4,7 +4,7 @@ const CONTRACT = {
     'abi': []
   },
   'Rinkeby': {
-    'address': '0x57964eB4bDA00d93A8C004A7a4E23fF13A0B9aF3',
+    'address': '0x5Cc7ac3A9661a2e35ed5763be0af93f087648004',
     'abi': [
       {
         "constant": true,
@@ -207,6 +207,26 @@ const CONTRACT = {
         "stateMutability": "nonpayable",
         "type": "function",
         "signature": "0xfe90ff7d"
+      },
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "_tokenAddress",
+            "type": "address"
+          }
+        ],
+        "name": "checkRequiremnetLockup",
+        "outputs": [
+          {
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function",
+        "signature": "0x0a028476"
       },
       {
         "constant": false,

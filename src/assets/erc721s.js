@@ -36,7 +36,7 @@ const ERC721s = {
   'Rinkeby': {
     'CK': {
       'name': 'Cryptokitties',
-      'address': '',
+      'address': '0x16baf0de678e52367adc69fd067e5edd1d33e3bf',
       'abi': []
     },
     'LAND': {

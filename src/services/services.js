@@ -19,6 +19,15 @@ async function setupWeb3(_this) {
    }
 }
 
+async function getWeb3() {
+  if (typeof window.web3 !== 'undefined') {
+    window.ethereum.enable();
+    return new Web3(window.web3.currentProvider)
+   } else {
+     alert('Please use MetaMask!')
+   }
+}
+
 async function getContract(_web3, abi, address) {
   // return new _web3.eth.Contract(abi, address);
   try {
@@ -26,6 +35,22 @@ async function getContract(_web3, abi, address) {
   } catch (err) {
     console.log(err);
   }
+}
+
+/**
+ * Test if we can get data from rinkeby crypto kittes
+ */
+async function getUserBalanceOfERC721(_web3){
+  let web3 = await getWeb3();
+  let questing = await getContract(web3, CONTRACT.Rinkeby.abi, CONTRACT.Rinkeby.address)
+  let a1 = await web3.eth.getAccounts()[0];
+  let balance = 0
+  try {
+    balance = await questing.methods.checkRequiremnetLockup('0x16baf0de678e52367adc69fd067e5edd1d33e3bf').call({from: a1})
+  } catch(e){
+
+  }
+  return balance
 }
 
 /**
@@ -146,7 +171,7 @@ async function setupState(_this) {
   })
 }
 
-export { setupWeb3, setupState}
+export { setupWeb3, setupState, getUserBalanceOfERC721}
 
 
 // // PASS THIS IN AS PROP IN LIEU OF WEB3PROVIDER ??

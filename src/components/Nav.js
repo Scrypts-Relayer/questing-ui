@@ -6,7 +6,9 @@ const Nav = (props) => {
   return (
     <div className="nav">
       <div id="navLeft">
-        <h1 className="whiteText">Pursuit</h1>
+        <NavLink to="/log" >
+        < h1 className="whiteText">Pursuit</h1>
+        </NavLink>
       </div>
       <div id="navRight">
         <NavLink to="/log" activeClassName="navSelected">

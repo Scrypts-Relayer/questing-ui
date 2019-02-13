@@ -6,7 +6,7 @@ class QuestCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      reqKeys : ['CK', 'CK', 'CK']
     };
   }
 
@@ -23,21 +23,8 @@ class QuestCard extends Component {
         </div>
         <div className="qcardMiddle">
           <QuestReqItem 
-            reqName={this.props.reqName}
-            amt={1}
-            active={true}
-            total={1}
-          />
-          <QuestReqItem 
-            reqName={this.props.reqName}
-            amt={0}
-            active={true}
-            total={1}/>
-          <QuestReqItem 
-            reqName={this.props.reqName}
-            amt={1}
-            active={false}
-            total={1}
+            reqName={'Crypto Kitties'}
+            reqKey={'CK'}
           />
         </div>
         <div className="qcardRight">
