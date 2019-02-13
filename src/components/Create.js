@@ -10,7 +10,7 @@ class Create extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      step : 2,
+      step : 1,
       title : '',
       selectedReqs : new Set(),
       selectedPrize : 'CK',
