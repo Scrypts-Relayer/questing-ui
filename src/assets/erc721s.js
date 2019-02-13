@@ -6,12 +6,12 @@ const ERC721s = {
       'abi': []
     },
     'LAND': {
-      'name': 'land',
+      'name': 'Decentraland',
       'address': '0xF87E31492Faf9A91B02Ee0dEAAd50d51d56D5d4d',
       'abi': []
     },
     'TKT': {
-      'name': 'ticket',
+      'name': 'Eth Tickets',
       'address': '0xf5BecD11b4FBd4FB2988cA7302DB25577cE4b36A',
       'abi': []
     },

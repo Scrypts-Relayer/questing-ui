@@ -13,13 +13,13 @@ class Create extends Component {
       step : 2,
       title : '',
       selectedReqs : new Set(),
-      selectedPrize : '',
+      selectedPrize : 'CK',
       titleError : false, 
       reqError : false,
-      prizeError : false,
       amtError : false,
-      amount : 0,
-      nftSelected : false
+      amount : 1,
+      tokenId : 0,
+      nftSelected : true
     };
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this)
@@ -68,15 +68,34 @@ class Create extends Component {
   }
 
   displayPrizes(){
-    let allTokens = {};
-    for (let item in nfts.Main){
-      allTokens[item] = nfts[item]
-    }
-    for (let item in erc20s.Main){
-      allTokens[item] = erc20s[item]
-    }
+    return(
+      <div className="prizeGrid">
+        {this.display721s()}
+        {this.display20s()}
+      </div>
+    )
+  }
+
+  display721s(){
     return (
-      Object.entries(allTokens).map((item)=>{
+      Object.entries(nfts.Main).map((item)=>{
+        return (
+          <div 
+            className={this.state.selectedPrize === item[0] ? "prizeCard prizeCardSelected" : "prizeCard"} 
+            key={item[0]} 
+            onClick={(event)=>{this.updateSelectedPrize(item[0])}}
+          >
+            <p className="prizeTokenTicker">{item[1].name}</p>
+            <img alt={''} src={cat} id="prizePic" />
+          </div>
+        )
+      })
+    )
+  }
+
+  display20s(){
+    return (
+      Object.entries(erc20s.Main).map((item)=>{
         return (
           <div 
             className={this.state.selectedPrize === item[0] ? "prizeCard prizeCardSelected" : "prizeCard"} 
@@ -136,19 +155,15 @@ class Create extends Component {
   validatePageTwo(){
     let valid = true;
     this.setState({
-      prizeError : false,
       amtError : false
     })
-    if(this.state.selectedPrize === ''){
-      this.setState({
-        prizeError : true
-      })
-      valid = false;
-    }
     if(this.state.amount < 1){
       this.setState({
         amtError : true
       })
+      valid = false;
+    }
+    if(this.state.tokenId < 0 || this.state.tokenId === ''){
       valid = false;
     }
     return valid
@@ -226,12 +241,9 @@ class Create extends Component {
             <h3>Step {this.state.step} of 2</h3>
           </div>
           <div className="prizeSelection">
-            {this.state.prizeError ? <h3 className="errorText" id="prizeSelectError">You must select a prize.</h3> : ''}
             <h6>Insert Prize</h6>
             <p className="bottomText">When you select your prize, it will be hed in escrow while the quest is open.</p>
-            <div className="prizeGrid">
-              {this.displayPrizes()}
-            </div>
+            {this.displayPrizes()}
             {erc20s.Main.hasOwnProperty(this.state.selectedPrize) ? 
               <div className="amountRow">
                 {this.state.amtError ? <h3 className="errorText" id="amtError">You must enter an amount great than 0.</h3> : ''}
@@ -243,8 +255,20 @@ class Create extends Component {
                   onKeyUp={(event)=>{this.setState({amount : event.target.value.replace(/[^\d]+/, '')})}}
                   onChange={(event)=>{this.setState({amount : event.target.value})}}
                 />
-              </div> 
-            : ''}
+              </div>
+            : 
+            <div className="amountRow">
+              <h5 id="nftWarning">Enter the id of the NFT that you own</h5>
+              <h4 style={{marginRight:"20px"}}>Prize Token Id</h4>
+                <input 
+                className="createInput" 
+                value={this.state.tokenId}
+                type="text" 
+                onKeyUp={(event)=>{this.setState({tokenId : event.target.value.replace(/[^\d]+/, '')})}}
+                onChange={(event)=>{this.setState({tokenId : event.target.value})}}
+              />
+            </div>  
+          }
           </div>
           <div className="submitWrapper">
             <div className="pageSubmit" onClick={this.completeQuest} id="page2Submit">

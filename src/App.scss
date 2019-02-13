@@ -28,6 +28,11 @@ h4 {
   font-weight: 400;
   font-size: 16px;
 }
+h5 {
+  font-size: 14px;
+  font-weight: 200;
+  color: #c1c1c1;
+}
 h6{
   font-size: 18px;
   font-weight: 600;
@@ -449,7 +454,7 @@ html, body{
   align-items: center;
   position: relative;
   width: 50%;
-  min-height: 500px;
+  min-height: 480px;
 }
 
 .prizeGrid{
@@ -514,6 +519,11 @@ html, body{
   align-self: flex-end;
 }
 
+#nftWarning{
+  left: 10%;
+  position: absolute;
+}
+
 #amtError{
   position: absolute;
   left: 10%;
@@ -535,7 +545,7 @@ html, body{
 }
 
 ///breakpoints
-@media only screen and (max-width: 1100px) {
+@media only screen and (max-width: 1200px) {
   .questContainer{
     min-width: 800px;
   }
@@ -553,8 +563,9 @@ html, body{
   }
 
   .createPage{
-    width: 1000px;
-
+    width: 1300px;
   }
+
+  
 
 }
