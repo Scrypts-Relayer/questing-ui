@@ -22,7 +22,7 @@ class QuestReqItem extends Component {
   async checkIfOwned(){
     let key = this.props.reqKey
     let balance = 0
-    balance = await getUserBalanceOfERC721(nfts.Rinkeby[key].address);      
+    balance = await getUserBalanceOfERC721(nfts.Rinkeby[key].address, this.props.net);
     if (balance >0){
       this.setState({
         active : false,
@@ -49,7 +49,7 @@ class QuestReqItem extends Component {
     if(this.state.active){
       return (
         <input placeholder={'TokenId'} className="reqIdInput"/>
-      ) 
+      )
     } else {
       return <p style={{fontSize: '12px'}} className="tokenIdtext">tokenID: 655</p>
     }
@@ -59,7 +59,7 @@ class QuestReqItem extends Component {
     if(this.state.active){
       return (
         ''
-      ) 
+      )
     } else {
       return (
         <img src={check} alt={''} className="reqCheck" />

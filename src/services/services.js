@@ -5,6 +5,11 @@ import CONTRACT from '../assets/contract';
 import ERC20s from '../assets/erc20s';
 import ERC721s from '../assets/erc721s';
 
+import bin_uint from "./bytecode/bin_uint"
+import abi_uint from "./abi/abi_uint"
+import bin_str from "./bytecode/bin_str"
+import abi_str from "./abi/abi_str"
+
 // async module.exports :
 // https://duckduckgo.com/?q=module+export+asynchronous&ia=web
 async function setupWeb3(_this) {
@@ -13,6 +18,7 @@ async function setupWeb3(_this) {
     _this.setState({
       web3 : new Web3(window.web3.currentProvider),
     })
+
    } else {
      alert('Please use MetaMask!')
      // ganache whatever or force them to use metamask
@@ -40,74 +46,92 @@ async function getContract(_web3, abi, address) {
 /**
  * Test if we can get data from rinkeby crypto kittes
  */
-async function getUserBalanceOfERC721(_web3){
-  let web3 = await getWeb3();
-  let questing = await getContract(web3, CONTRACT.Rinkeby.abi, CONTRACT.Rinkeby.address)
-  let a1 = await web3.eth.getAccounts()[0];
+async function getUserBalanceOfERC721(_web3, net){
+  // let web3 = await getWeb3();
+  let questing = await getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address)
+  let a1 = await _web3.eth.getAccounts()[0];
   let balance = 0
   try {
     balance = await questing.methods.checkRequiremnetLockup('0x16baf0de678e52367adc69fd067e5edd1d33e3bf').call({from: a1})
-  } catch(e){
-
+  } catch(err){
+    console.log(err);
   }
   return balance
 }
 
 /**
- * Check if user has a specifc token. 
- * 
- * Used in log screen to show if they have any of the requirements. 
- * Also used in create page to show which tokens they own and can 
- * use as a prize. 
+ * Check if user has a specifc token.
+ *
+ * Used in log screen to show if they have any of the requirements.
+ * Also used in create page to show which tokens they own and can
+ * use as a prize.
  */
-async function checkOwnership(_web3, tokenAddress, account, isNFT){
-  
+async function checkOwnership(_web3, tokenAddress, account, isNFT) {
+
 }
 
 
 
-// async function getQuests(start, _limit, net, _web3) {
-//   let output = []
-// 	try {
-//     let contract = await getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address)
-//     let totalQuests = await contract.questId.call((err, result) => { return result ? !err : err });
-//     // let max = Math.min(_limit, _max)
-//     let listedQuests = start;
-//     let parsedQuests = start;
-//     while (listedQuests < _limit && parsedQuests < totalQuests) {
-//       let next = await getAQuest(c, net, _web3)
-//       let open = await getQuestStatus(c, contract)
-//       if (open) { output.push(next); listedQuests++ }
-//       parsedQuests++;
-//     }
-// 	} catch (err) {
-// 		console.log(err);
-// 	}
-// }
+async function getQuests(start, _limit, net, _web3) {
+  let output = [];
+	try {
+    let contract = await getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address);
+    let totalQuests = await getTotalQuests(contract);
+    let listedQuests = start;
+    let parsedQuests = start;
+    while (listedQuests < _limit && parsedQuests < totalQuests) {
+      let next = await getAQuest(parsedQuests, net, _web3)
+      let open = await getQuestStatus(parsedQuests, contract)
+      if (open) { output.push(next); listedQuests++ }
+      parsedQuests++;
+    }
+	} catch (err) {
+		console.log(err);
+	}
+  return output;
+}
 
-// async function getQuestStatus(id, contract) {
-//   try {
-// 		let ans = await contract.questExists.call(id)
-//     return ans;
-// 	} catch (err) {
-// 		console.log(err);
-// 	}
-// }
+async function getTotalQuests(_contract) {
+  return _contract.questId.call((err, result) => {
+    return result ? !err : err;
+  });
+}
 
-// async function getAQuest(id, contract) {
-//   let output = []
-// 	try {
-//     contract.QUESTS.call((id) => {
-//       //output.push(result2);
-//       output.push(id);
-//       c++;
-//     })
-// 		return output;
-// 	} catch (err) {
-// 		console.log(err);
-// 	}
-// }
+async function getQuestStatus(id, contract) {
+  return contract.questExists.call(id, (err, result) => {
+    return err ? err : result
+  })
+  // try {
+	// 	let ans = await contract.questExists.call(id, (err, result) => {})
+  //   return ans;
+	// } catch (err) {
+	// 	console.log(err);
+	// }
+}
 
+async function getAQuest(id, contract) {
+  return contract.QUESTS.call(id, (err, result) => {
+    return err ? err : result
+    //output.push(result2);
+    // output.push(id);
+    // c++;
+  })
+  // let output = []
+	// try {
+  //   contract.QUESTS.call((id) => {
+  //     //output.push(result2);
+  //     output.push(id);
+  //     c++;
+  //   })
+	// 	return output;
+	// } catch (err) {
+	// 	console.log(err);
+	// }
+}
+
+/*
+* This is shit:
+*/
 // let getQuests = (net, _web3, start, _limit) => {
 //   let output = []
 //   let contract = getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address)
@@ -168,10 +192,50 @@ async function setupState(_this) {
         account: accounts[0],
       })
     })
+
   })
 }
 
-export { setupWeb3, setupState, getUserBalanceOfERC721}
+async function yass() {
+  let w3 = Web3(Web3.providers.HttpProvider("https://rinkeby.infura.io/d12686c789f3434fab6df795a63aefbd"));
+
+  // uint
+
+  let contract_ = w3.eth.contract({abi:abi_uint, bytecode:bin_uint});
+
+  let acct = w3.eth.account.privateKeyToAccount("B7CBFE15F0F2E196095D4B6983ADA22E16CC5251F9A00A5AC2BC475ED1B37350")
+
+  let construct_txn = contract_.constructor().buildTransaction({
+      'from': acct.address,
+      'nonce': w3.eth.getTransactionCount(acct.address),
+      'gas': 1728712,
+      'gasPrice': w3.toWei('21', 'gwei')})
+
+  let signed = acct.signTransaction(construct_txn)
+
+  w3.eth.sendRawTransaction(signed.rawTransaction)
+
+  console.log(signed)
+
+  // str
+
+  contract_ = w3.eth.contract({abi:abi_str, bytecode:bin_str})
+
+  acct = w3.eth.account.privateKeyToAccount("B7CBFE15F0F2E196095D4B6983ADA22E16CC5251F9A00A5AC2BC475ED1B37350")
+
+  construct_txn = contract_.constructor().buildTransaction({
+      'from': acct.address,
+      'nonce': w3.eth.getTransactionCount(acct.address),
+      'gas': 1728712,
+      'gasPrice': w3.toWei('21', 'gwei')})
+
+  signed = acct.signTransaction(construct_txn)
+
+  w3.eth.sendRawTransaction(signed.rawTransaction)
+  console.log(signed)
+}
+
+export { setupWeb3, setupState, getUserBalanceOfERC721, yass}
 
 
 // // PASS THIS IN AS PROP IN LIEU OF WEB3PROVIDER ??
