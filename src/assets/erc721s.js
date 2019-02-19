@@ -34,37 +34,16 @@ const ERC721s = {
 
 
   'Rinkeby': {
-    'CK': {
-      'name': 'Cryptokitties',
+    'KITTYR': {
+      'name': 'Crypto Kitties RB',  
       'address': '0x16baf0de678e52367adc69fd067e5edd1d33e3bf',
       'abi': []
     },
-    'LAND': {
-      'name': 'land',
-      'address': '',
-      'abi': []
-    },
-    'TKT': {
-      'name': 'ticket',
-      'address': '',
-      'abi': []
-    },
-    'MLBCB': {
-      'name': 'MLBCoin',
-      'address': '',
-      'abi': []
-    },
-    'MarbleCards': {
-      'name': 'MarbleCards',
-      'address': '',
-      'abi': []
-    },
-    'EMJ': {
-      'name': 'Ethmoji',
-      'address': '',
+    'FakeNFT': {
+      'name': 'Fake NFT',
+      'address': '0x26sf0de678e52367adc69fd067e5edd1d33e3bf',
       'abi': []
     }
-
   }
 }
 

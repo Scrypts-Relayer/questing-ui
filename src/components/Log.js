@@ -1,19 +1,25 @@
 import React, { Component} from "react";
 import '../App.scss'
 import QuestCard from './QuestCard'
-import {setupWeb3} from '../services/services.js'
 
 class Log extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      web3 : null
-    };
-  }
 
-  async componentWillMount() {
-    await setupWeb3(this);
-    //getPolicies(this.state.web3);
+  getQuestData() {
+    return (
+      this.props.quests.map((item, i)=>{
+        return (
+          <QuestCard 
+              reqKeys = {item.reqs}
+              amt={item.prizeAmt}
+              prizeAddress={item.prizeAddress}
+              id={item.id}
+              network ={this.props.network}
+              balances = {this.props.balances}
+              key={i}
+            />
+        )
+      })
+    )
   }
 
   render() {
@@ -24,31 +30,9 @@ class Log extends Component {
             <h3>Quests Available</h3>
             <p className="infoText" id="headerInfoText">(What is this?)</p>
           </div>
-          <QuestCard 
-            amt={10}
-            rwdName={'DAI'}
-            id={2}
-          />
-          <QuestCard 
-            amt={10}
-            rwdName={'ETH'}
-            id={2}
-          />
-          <QuestCard 
-            amt={10}
-            rwdName={'ETH'}
-            id={2}
-          />
-          <QuestCard 
-            amt={10}
-            rwdName={'ETH'}
-            id={2}
-          />
-          <QuestCard 
-            amt={10}
-            rwdName={'ETH'}
-            id={2}
-          />
+          <div className="questCardGrid">
+            {this.getQuestData()}
+          </div>
         </div>
       </div>
     );

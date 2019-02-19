@@ -39,39 +39,9 @@ const ERC20s = {
 
 
   'Rinkeby': {
-    'ZRX': {
-      'name': '0x',
-      'address': '',
-      'abi': []
-    },
-    'MANA': {
-      'name': 'Mana',
-      'address': '',
-      'abi': []
-    },
-    'MKR': {
-      'name': 'Maker Coin',
-      'address': '',
-      'abi': []
-    },
-    'DAI': {
-      'name': 'Dai',
-      'address': '',
-      'abi': []
-    },
-    'REP': {
-      'name': 'Reputation',
-      'address': '',
-      'abi': []
-    },
-    'SPANK': {
-      'name': 'Spank! Coin',
-      'address': '',
-      'abi': []
-    },
-    'WETH': {
-      'name': 'Wrapped Ether',
-      'address': '',
+    '"KITTYR"': {
+      'name': 'Crypto Kitties Rinkeby',
+      'address': '"0x16baf0de678e52367adc69fd067e5edd1d33e3bf"',
       'abi': []
     }
   }
