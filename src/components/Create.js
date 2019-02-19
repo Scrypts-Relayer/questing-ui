@@ -33,7 +33,7 @@ class Create extends Component {
 
   populateSelectedReqs(){
     return (
-      Object.keys(nfts.Main).map((key, i)=> {
+      Object.keys(nfts.Main).map((key, i) => {
         if(this.state.selectedReqs.has(key)){
           return(
             <div className="createRow" key={i}>
@@ -45,7 +45,9 @@ class Create extends Component {
                 />
             </div>
           )
-      }})
+        }
+        return ''
+      })
     )
   }
 

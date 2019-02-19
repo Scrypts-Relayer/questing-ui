@@ -1,35 +1,55 @@
 import React, { Component} from "react";
 import '../App.scss'
 import QuestReqItem from './QuestReqItem'
-
+import ckImage from '../assets/img/ck.png'
+import nfts from '../assets/erc721s'
 class QuestCard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      reqKeys : ['CK', 'CK', 'CK']
-    };
+
+  generateRequirements(){
+    if(this.props.network){
+      return (
+        this.props.reqKeys.map((key, i)=>{
+          let balance = this.props.balances[key.toLowerCase()]
+          let name = this.getPrizeName(key)
+          return(
+            <QuestReqItem 
+              reqName={name}
+              balance ={balance > 0 ? 1 : 0}
+              key={i}
+            />
+          )
+        })
+      )
+    }
   }
 
-  async componentWillMount() {
-
+  getPrizeName(address){
+    let name = 'Not Supported'
+    for(let nft in nfts[this.props.network]){
+      let k1 = nfts[this.props.network][nft].address
+      let k2 = address.toLowerCase()
+      if(k1 === k2){
+        name = nfts[this.props.network][nft].name
+      }
+    }
+    return name;
   }
 
   render() {
     return (
       <div className="questCard">
-        <div className="qcardLeft">
-          <h4>Reward</h4>
-          <h4 id='rwdText'>{this.props.amt} {this.props.rwdName}</h4>
+        <div className="qcardTop">
+          <p className="boldGrey">Reward</p>
+          <h6>{this.props.amt} {this.getPrizeName(this.props.prizeAddress)}</h6>
+          <img id="questCardImage" src={ckImage} alt={''} />
         </div>
-        <div className="qcardMiddle">
-          <QuestReqItem 
-            reqName={'Crypto Kitties'}
-            reqKey={'CK'}
-          />
-        </div>
-        <div className="qcardRight">
+        <div className="qcardBottom">
+          <p className="boldGrey">Requirements</p>
+          <div className="questReqContainer">
+            {this.generateRequirements()}
+          </div>
           <div className="questSubmit">
-            <h4 className="whiteText">Submit</h4>
+            <h4 className="whiteText">Complete</h4>
           </div>
           <h4 id="questIdText">questID : {this.props.id}</h4>
         </div>

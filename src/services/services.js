@@ -1,8 +1,5 @@
 import Web3 from 'web3';
-import React from 'react';
-
 import CONTRACT from '../assets/contract';
-import ERC20s from '../assets/erc20s';
 import ERC721s from '../assets/erc721s';
 
 // async module.exports :
@@ -28,6 +25,23 @@ async function getWeb3() {
    }
 }
 
+async function getNetwork(web3) {
+    let id = await web3.eth.net.getId();
+    let networkName;
+    switch (id) {
+      case 1:
+        networkName = "Main";
+        break;
+      case 4:
+        networkName = "Rinkeby";
+        break;
+      default:
+        networkName = "Unknown";
+    }
+    return networkName;
+}
+
+
 async function getContract(_web3, abi, address) {
   // return new _web3.eth.Contract(abi, address);
   try {
@@ -37,34 +51,57 @@ async function getContract(_web3, abi, address) {
   }
 }
 
-/**
- * Test if we can get data from rinkeby crypto kittes
- */
-async function getUserBalanceOfERC721(_web3){
-  let web3 = await getWeb3();
-  let questing = await getContract(web3, CONTRACT.Rinkeby.abi, CONTRACT.Rinkeby.address)
-  let a1 = await web3.eth.getAccounts()[0];
-  let balance = 0
-  try {
-    balance = await questing.methods.checkRequiremnetLockup('0x16baf0de678e52367adc69fd067e5edd1d33e3bf').call({from: a1})
-  } catch(e){
-
+async function getBalancesForAll(network, account){
+  let balanceData ={}
+  //for every token in the list, get teh balance with open sea api
+  let query = 'https://rinkeby-api.opensea.io/api/v1/assets?owner='+account
+  let res = await fetch(query)
+  let assetData = await res.json()
+  //populate with keys and value []
+  for (let key in ERC721s[network]){
+    balanceData[ERC721s[network][key].address] = []
   }
-  return balance
+  for(let key in assetData.assets){
+    let assetSymbol = assetData.assets[key].asset_contract.symbol
+    let assetAddres = assetData.assets[key].asset_contract.address
+    if(ERC721s[network].hasOwnProperty(assetSymbol)){
+      balanceData[assetAddres].push(parseInt(assetData.assets[key].token_id))
+    }
+  }
+  return balanceData
 }
 
-/**
- * Check if user has a specifc token. 
- * 
- * Used in log screen to show if they have any of the requirements. 
- * Also used in create page to show which tokens they own and can 
- * use as a prize. 
- */
-async function checkOwnership(_web3, tokenAddress, account, isNFT){
-  
+async function getTokenNameFromAddress(address){
+  let query = 'https://rinkeby-api.opensea.io/api/v1/asset_contract/' + address
+  let res = await fetch(query)
+  let formatRes = await res.json()
+  return formatRes.name
 }
 
-
+async function getQuests(web3, network, account){
+  let contract = await getContract(web3, CONTRACT[network].abi, CONTRACT[network].address)
+  let questId = await contract.methods.getId().call({from : account})
+  let allQuests = []
+  for (let i =1; i <= questId; i++){
+    let quest = await contract.methods.QUESTS(i).call({from : account})
+    let reqs = []
+    let length = await contract.methods.getQuestsReqLength(i).call({from : account})
+    for (let j = 0; j < length; j++){
+      let req = await contract.methods.getReqAddress(i, j).call({from : account})
+      reqs.push(req)
+    }
+    //let open = await contract.methods.questExists(i).call();
+    let newQuest = {
+      reqs : reqs,
+      prizeAddress : quest.prizeTokenAddress,
+      prizeAmt : quest.prizeTokenAmount,
+      prizeTokenId : quest.prizeTokenId,
+      id : i
+    }
+    allQuests.push(newQuest)
+  }
+  return allQuests
+}
 
 // async function getQuests(start, _limit, net, _web3) {
 //   let output = []
@@ -129,107 +166,44 @@ async function checkOwnership(_web3, tokenAddress, account, isNFT){
 //   }
 // }
 
-async function setupState(_this) {
-  // Source: https://ethereum.stackexchange.com/questions/17207/how-to-detect-if-on-mainnet-or-testnet
-  window.web3.version.getNetwork((err, networkId) => {
-    let networkName;
-    switch (networkId) {
-      case "1":
-        networkName = "Main";
-        break;
-      // case "2":
-      //  networkName = "Morden";
-      //  break;
-      // case "3":
-      //   networkName = "Ropsten";
-      //   break;
-      case "4":
-        networkName = "Rinkeby";
-        break;
-      // case "42":
-      //   networkName = "Kovan";
-      //   break;
-      default:
-        networkName = "Unknown";
-    }
-    const net = networkName;
-    const abi = CONTRACT[net].abi
-    const address = CONTRACT[net].address
-    if (net === "Unknown") {
-      alert("Pursuit is only available on Rinkeby testnet or Mainnet!\nPlease switch networks and try again.");
-      return;
-    }
-    let accounts = []
-    _this.state.web3.eth.getAccounts().then(res => {
-      accounts = res;
-      _this.setState({
-        contract: getContract(_this.state.web3, abi, address),
-        net,
-        account: accounts[0],
-      })
-    })
-  })
-}
 
-export { setupWeb3, setupState, getUserBalanceOfERC721}
+export { getWeb3, setupWeb3, getNetwork, getBalancesForAll, getQuests, getTokenNameFromAddress}
 
 
-// // PASS THIS IN AS PROP IN LIEU OF WEB3PROVIDER ??
-// let checkForMetaMask = (net) => {
-//   if (net){
-//     return (
-//       <div className="container">
-//       <div className="button" id="b1" onClick={"function"}>
-//         <p>Click to increase balance</p>
-//       </div>
-//       <div className="button" id="b2" onClick={"function"}>
-//         <p>Click to get balance</p>
-//       </div>
-//     </div>
-//     )
-//   } else {
-//     return (
-//       <div>
-//         <p>Connect to metamask</p>
-//       </div>
-//     )
-//   }
+// let createQuest = () => {
+//   this.state.contract.methods.createQuest(
+//     // address _prizeTokenAddress,
+//     // uint _prizeTokenId,
+//     // uint _prizeTokenAmount,
+//     // bool _prizeIsNFT,
+//     // address[] memory _requirementsList
+//    ).send({
+//     from : this.state.account
+//    }, function(err, res){
+//     alert('Error in creating the quest!');
+//   });
 // }
 
-let createQuest = (_this) => {
-  this.state.contract.methods.createQuest(
-    // address _prizeTokenAddress,
-    // uint _prizeTokenId,
-    // uint _prizeTokenAmount,
-    // bool _prizeIsNFT,
-    // address[] memory _requirementsList
-   ).send({
-    from : this.state.account
-   }, function(err, res){
-    alert('Error in creating the quest!');
-  });
-}
+// let cancelQuest = (_this) => {
+//   this.state.contract.methods.cancelQuest(
+//     // uint _questId
+//    ).send({
+//     from : this.state.account
+//    }, function(err, res){
+//     alert('Error in cancelling the quest!');
+//   });
+// }
 
-let cancelQuest = (_this) => {
-  this.state.contract.methods.cancelQuest(
-    // uint _questId
-   ).send({
-    from : this.state.account
-   }, function(err, res){
-    alert('Error in cancelling the quest!');
-  });
-}
-
-let completeQuest = (_this) => {
-  this.state.contract.methods.completeQuest(
-    // uint _questId
-    // uint[] memory _submittedTokenIds
-   ).send({
-    from : this.state.account
-   }, function(err, res){
-    alert('Error in completing the quest!');
-  });
-}
+// let completeQuest = (_this) => {
+//   this.state.contract.methods.completeQuest(
+//     // uint _questId
+//     // uint[] memory _submittedTokenIds
+//    ).send({
+//     from : this.state.account
+//    }, function(err, res){
+//     alert('Error in completing the quest!');
+//   });
+// }
 
 // let readQuest = (_this, qid) => {
 //   // Source: https://www.reddit.com/r/ethdev/comments/6us20e/accessing_struct_value_inside_of_map_using_web3/
@@ -272,22 +246,22 @@ ALSO: Ian: we only accept or disburse 721s?
 */
 
 
-let approvePursuit = (_state, tokenTicker, user, tokenId) => {
-  let tokenContract = getContract(
-    _state.web3,
-    ERC721s[_state.net][tokenTicker].abi,
-    ERC721s[_state.net][tokenTicker].address
-  )
-  tokenContract.methods.transferFrom(
-    user,
-    CONTRACT[_state.net].address,
-    tokenId
-   ).send({
-    from: user
-  }, function(err, res){
-    alert('Error in fetching approval the for requisite token!');
-  });
-}
+// let approvePursuit = (_state, tokenTicker, user, tokenId) => {
+//   let tokenContract = getContract(
+//     _state.web3,
+//     ERC721s[_state.net][tokenTicker].abi,
+//     ERC721s[_state.net][tokenTicker].address
+//   )
+//   tokenContract.methods.transferFrom(
+//     user,
+//     CONTRACT[_state.net].address,
+//     tokenId
+//    ).send({
+//     from: user
+//   }, function(err, res){
+//     alert('Error in fetching approval the for requisite token!');
+//   });
+// }
 
 /*
 control flow:
