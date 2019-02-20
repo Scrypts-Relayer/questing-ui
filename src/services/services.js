@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 import CONTRACT from '../assets/contract';
 import ERC721s from '../assets/erc721s';
+import abi721 from '../assets/erc721_abi';
 
 import bin_uint from "./bytecode/bin_uint"
 import abi_uint from "./abi/abi_uint"
@@ -47,6 +48,26 @@ async function getNetwork(web3) {
     return networkName;
 }
 
+async function setApproval(_web3, network, address, id, account) {
+  try {
+    let token_contract = await getContract(_web3, abi721, address)
+    await token_contract.methods.approve(CONTRACT[network].address, id).call({from : account})
+    console.log(`Successful approval for token id ${id}!`);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function getApproval(_web3, network, address, id, account) {
+  try {
+    let token_contract = await getContract(_web3, abi721, address)
+    let res = await token_contract.methods.getApproved(id).call({from : account})
+    let ans = CONTRACT[network].address === res
+    console.log(`Q: Pursuit is approved for 721 id ${id}? A: ${ans}.`);
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 async function getContract(_web3, abi, address) {
   // return new _web3.eth.Contract(abi, address);
@@ -61,7 +82,7 @@ async function getBalancesForAll(network, account){
   let balanceData ={}
   //for every token in the list, get teh balance with open sea api
   let query = 'https://rinkeby-api.opensea.io/api/v1/assets?owner='+account
-  let res = await fetch(query)
+  let res = await fetch(query).catch((err) => {alert('no open sea')})
   let assetData = await res.json()
   //populate with keys and value []
   for (let key in ERC721s[network]){
@@ -77,11 +98,14 @@ async function getBalancesForAll(network, account){
   return balanceData
 }
 
-async function getTokenNameFromAddress(address){
+/*
+* `data` could be: "name", "image_url"
+*/
+async function getTokenDataFromAddress(address, data){
   let query = 'https://rinkeby-api.opensea.io/api/v1/asset_contract/' + address
-  let res = await fetch(query)
+  let res = await fetch(query).catch((err) => {alert('no rinkeby')})
   let formatRes = await res.json()
-  return formatRes.name
+  return formatRes[data]
 }
 
 async function getQuests(web3, network, account){
@@ -108,25 +132,25 @@ async function getQuests(web3, network, account){
   }
   return allQuests
 }
-
-async function getQuests(start, _limit, net, _web3) {
-  let output = [];
-	try {
-    let contract = await getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address);
-    let totalQuests = await getTotalQuests(contract);
-    let listedQuests = start;
-    let parsedQuests = start;
-    while (listedQuests < _limit && parsedQuests < totalQuests) {
-      let next = await getAQuest(parsedQuests, net, _web3)
-      let open = await getQuestStatus(parsedQuests, contract)
-      if (open) { output.push(next); listedQuests++ }
-      parsedQuests++;
-    }
-	} catch (err) {
-		console.log(err);
-	}
-  return output;
-}
+//
+// async function getQuests(start, _limit, net, _web3) {
+//   let output = [];
+// 	try {
+//     let contract = await getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address);
+//     let totalQuests = await getTotalQuests(contract);
+//     let listedQuests = start;
+//     let parsedQuests = start;
+//     while (listedQuests < _limit && parsedQuests < totalQuests) {
+//       let next = await getAQuest(parsedQuests, net, _web3)
+//       let open = await getQuestStatus(parsedQuests, contract)
+//       if (open) { output.push(next); listedQuests++ }
+//       parsedQuests++;
+//     }
+// 	} catch (err) {
+// 		console.log(err);
+// 	}
+//   return output;
+// }
 
 async function getTotalQuests(_contract) {
   return _contract.questId.call((err, result) => {
