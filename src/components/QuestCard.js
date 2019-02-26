@@ -24,7 +24,8 @@ class QuestCard extends Component {
   }
 
   getPrizeName(address){
-    let name = 'Not Supported'
+    let name = ''
+    //let name = 'Token Address : ' + nfts[this.props.network][address].address
     for(let nft in nfts[this.props.network]){
       let k1 = nfts[this.props.network][nft].address
       let k2 = address.toLowerCase()

@@ -5,7 +5,6 @@ import QuestCard from './QuestCard'
 class Log extends Component {
 
   getQuestData() {
-    console.log(this.props.quest);
     return (
       this.props.quests.map((item, i)=>{
         return (
