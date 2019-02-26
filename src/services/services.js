@@ -84,7 +84,7 @@ async function getContract(_web3, abi, address) {
 async function getBalancesForAll(_web3, network, account){
   let balanceData = {} // if (typeof balanceData['addr'] === "object") {ERC721} else {ERC20}
   // ERC721s
-  // populate with keys and value []
+  // populate output with keys of ERC721 addresses we care about and value []
   for (let key in ERC721s[network]){
     balanceData[ERC721s[network][key].address] = []
   }
@@ -93,40 +93,25 @@ async function getBalancesForAll(_web3, network, account){
   let query = 'https://rinkeby-api.opensea.io/api/v1/assets?owner='+account
   let res = await fetch(query).catch((err) => {alert('im dead inside')})
   let assetData = await res.json()
-  // console.log('hi', assetData)
   // for every token in the list, get user's balance
   let assetSymbol;
   let assetAddres;
-  for (let key in assetData.assets) {
-    assetSymbol = assetData.assets[key].asset_contract.symbol;
-    assetAddres = assetData.assets[key].asset_contract.address;
+  for (const [_, value] of Object.entries(assetData.assets)) {
+    assetSymbol = value.asset_contract.symbol;
+    assetAddres = value.asset_contract.address;
     if (ERC721s[network].hasOwnProperty(assetSymbol)) {
-      balanceData[assetAddres].push(parseInt(assetData.assets[key].token_id));
+      balanceData[assetAddres].push(parseInt(value.token_id));
     }
   }
-
   // ERC20s
-  console.log('balanceData', balanceData)
-  let addrs = [];
-  for (const [_, value] of Object.entries(ERC20s[network])) {
-    balanceData[value.address] = 0;
-    addrs.push(value.address);
-    console.log(value)
-  }
+  // populate output with keys of ERC20 addresses we care about and value 0
+  // for every token in our list, get user's balance
   let token_contract;
-  for(let i = 0; i < addrs.length; i++) {
-    token_contract = await getContract(_web3, abi20, addrs[i]);
+  for (const [_, value] of Object.entries(ERC20s[network])) {
+    token_contract = await getContract(_web3, abi20, value.address);
     res = await token_contract.methods.balanceOf(account).call({from : account});
-    balanceData[assetAddres] = parseInt(res);
-    /*
-    * @IAN: IF YOU THINK THIS IS NECESSARY - I DON'T THINK SO
-    */
-    assetSymbol = await token_contract.methods.symbol().call({from : account});
-    if(ERC20s[network].hasOwnProperty(assetSymbol)){
-      balanceData[addrs[i]] = parseInt(res)
-    }
+    balanceData[value.address] = parseInt(res);
   }
-  console.log(balanceData)
   return balanceData
 }
 

@@ -40,11 +40,6 @@ const ERC721s = {
       'name': 'Crypto Kitties RB',
       'address': '0x16baf0de678e52367adc69fd067e5edd1d33e3bf',
       'abi': abi721
-    },
-    'FakeNFT': {
-      'name': 'Fake NFT',
-      'address': '0x26sf0de678e52367adc69fd067e5edd1d33e3bf',
-      'abi': abi721
     }
   }
 }
