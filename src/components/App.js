@@ -26,7 +26,7 @@ class App extends Component {
     let web3Res = await getWeb3();
     let net = await getNetwork(web3Res);
     let accounts = await web3Res.eth.getAccounts();
-    let bals = await getBalancesForAll(net, accounts[0])
+    let bals = await getBalancesForAll(web3Res, net, accounts[0])
     let questRes = await getQuests(web3Res, net, accounts[0]);
     console.log(questRes);
     this.setState({

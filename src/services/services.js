@@ -258,7 +258,10 @@ async function completeQuest(account, ourContract, questId, submittedTokenIds) {
   });
 }
 
-export { getWeb3, setupWeb3, getNetwork, getBalancesForAll, getQuests, getTokenDataFromAddress}
+export { getWeb3, setupWeb3, getNetwork,
+  getBalancesForAll, getQuests, getTokenDataFromAddress,
+  createQuest, completeQuest, cancelQuest
+}
 
 
 
