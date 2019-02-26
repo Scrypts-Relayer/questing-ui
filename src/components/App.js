@@ -54,7 +54,7 @@ class App extends Component {
         <Fragment>
           <div className="App">
             <Nav />
-            <Route path="/" exact component={Log} />
+            <Route path="/" exact component={logPage} />
             <Route 
               path="/log" 
               component={logPage}
