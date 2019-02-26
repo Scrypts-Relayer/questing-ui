@@ -90,40 +90,39 @@ async function getBalancesForAll(_web3, network, account){
   }
   // get all ERC721 assets owned by current account
   account = '0xE98CD5eDA084e71fc1E0b9459EAe0A60a2282045'
-  let query = 'https://rinkeby-api.opensea.io/api/v1/assets?owner='+account
-  let res = await fetch(query).catch((err) => {alert('im dead inside')})
-  let x = await res.json()
-  console.log('hi', x)
-  // for every token in the list, get user's balance
-  // let assetSymbol;
-  // let assetAddres;
-  // for (let key in assetData.assets) {
-  //   assetSymbol = assetData.assets[key].asset_contract.symbol;
-  //   assetAddres = assetData.assets[key].asset_contract.address;
-  //   if (ERC721s[network].hasOwnProperty(assetSymbol)) {
-  //     balanceData[assetAddres].push(parseInt(assetData.assets[key].token_id));
-  //   }
-  // }
-
-  // // ERC20s
-  // let addrs = [];
-  // for (let key in ERC20s[network]){
-  //   balanceData[ERC20s[network][key].address] = 0;
-  //   addrs.push(ERC20s[network][key].address);
-  // }
-  // let token_contract;
-  // for (let addr in addrs) {
-  //   token_contract = await getContract(_web3, abi20, addr);
-  //   res = await token_contract.methods.balanceOf(account).call({from : account});
-  //   balanceData[assetAddres] = parseInt(res);
-  //   /*
-  //   * @IAN: IF YOU THINK THIS IS NECESSARY - I DON'T THINK SO
-  //   */
-  //   assetSymbol = await token_contract.methods.symbol().call({from : account});
-  //   if(ERC20s[network].hasOwnProperty(assetSymbol)){
-  //     balanceData[addr] = parseInt(res)
-  //   }
-  // }
+  let query = 'https://rinkeby-api.opensea.io/api/v1/assets?owner='+account+'&api_key=e4f5e442e7664e3eb56fd7c415cf6128'
+  let res = await fetch(query)
+  let assetData = await res.json()
+  //for every token in the list, get user's balance
+  let assetSymbol;
+  let assetAddres;
+  for (let key in assetData.assets) {
+    assetSymbol = assetData.assets[key].asset_contract.symbol;
+    assetAddres = assetData.assets[key].asset_contract.address;
+    if (ERC721s[network].hasOwnProperty(assetSymbol)) {
+      balanceData[assetAddres].push(parseInt(assetData.assets[key].token_id));
+    }
+  }
+  // ERC20s
+  let addrs = [];
+  for (let key in ERC20s[network]){
+    balanceData[ERC20s[network][key].address] = 0;
+    addrs.push(ERC20s[network][key].address);
+  }
+  let token_contract;
+  for (let addr in addrs) {
+    token_contract = await getContract(_web3, abi20, addr);
+    console.log(token_contract)
+    res = await token_contract.methods.balanceOf(account).call({from : account});
+    balanceData[assetAddres] = parseInt(res);
+    /*
+    * @IAN: IF YOU THINK THIS IS NECESSARY - I DON'T THINK SO
+    */
+    assetSymbol = await token_contract.methods.symbol().call({from : account});
+    if(ERC20s[network].hasOwnProperty(assetSymbol)){
+      balanceData[addr] = parseInt(res)
+    }
+  }
 
   return balanceData
 }
