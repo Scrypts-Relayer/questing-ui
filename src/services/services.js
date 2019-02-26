@@ -11,9 +11,6 @@ import abi_uint from "./abi/abi_uint"
 import bin_str from "./bytecode/bin_str"
 import abi_str from "./abi/abi_str"
 
-import axios from "axios";
-
-
 // async module.exports :
 // https://duckduckgo.com/?q=module+export+asynchronous&ia=web
 async function setupWeb3(_this) {
@@ -92,9 +89,11 @@ async function getBalancesForAll(_web3, network, account){
     balanceData[ERC721s[network][key].address] = []
   }
   // get all ERC721 assets owned by current account
+  account = '0xE98CD5eDA084e71fc1E0b9459EAe0A60a2282045'
   let query = 'https://rinkeby-api.opensea.io/api/v1/assets?owner='+account
-  let res = fetch(query)
-  console.log(res)
+  let res = await fetch(query).catch((err) => {alert('im dead inside')})
+  let x = await res.json()
+  console.log('hi', x)
   // for every token in the list, get user's balance
   // let assetSymbol;
   // let assetAddres;
