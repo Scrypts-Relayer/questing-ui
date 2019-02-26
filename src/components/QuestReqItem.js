@@ -16,7 +16,7 @@ class QuestReqItem extends Component {
     this.checkIfOwned()
   }
 
-  async checkIfOwned(){  
+  async checkIfOwned(){
     if (this.props.balance >0){
       this.setState({
         active : false
@@ -36,7 +36,7 @@ class QuestReqItem extends Component {
     if(this.state.active){
       return (
         ''
-      ) 
+      )
     } else {
       return (
         <img src={check} alt={''} className="reqCheck" />

@@ -1,6 +1,15 @@
 import Web3 from 'web3';
-import CONTRACT from '../assets/contract';
+
 import ERC721s from '../assets/erc721s';
+import ERC20s from '../assets/erc20s';
+import abi721 from '../assets/erc721_abi';
+import abi20 from '../assets/erc20_abi';
+
+import CONTRACT from '../assets/contract';
+import bin_uint from "./bytecode/bin_uint"
+import abi_uint from "./abi/abi_uint"
+import bin_str from "./bytecode/bin_str"
+import abi_str from "./abi/abi_str"
 
 // async module.exports :
 // https://duckduckgo.com/?q=module+export+asynchronous&ia=web
@@ -10,6 +19,7 @@ async function setupWeb3(_this) {
     _this.setState({
       web3 : new Web3(window.web3.currentProvider),
     })
+
    } else {
      alert('Please use MetaMask!')
      // ganache whatever or force them to use metamask
@@ -41,6 +51,26 @@ async function getNetwork(web3) {
     return networkName;
 }
 
+async function setApproval(_web3, network, address, id, account) {
+  try {
+    let token_contract = await getContract(_web3, abi721, address)
+    await token_contract.methods.approve(CONTRACT[network].address, id).call({from : account})
+    console.log(`Successful approval for token id ${id}!`);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function getApproval(_web3, network, address, id, account) {
+  try {
+    let token_contract = await getContract(_web3, abi721, address)
+    let res = await token_contract.methods.getApproved(id).call({from : account})
+    let ans = CONTRACT[network].address === res
+    console.log(`Q: Pursuit is approved for 721 id ${id}? A: ${ans}.`);
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 async function getContract(_web3, abi, address) {
   // return new _web3.eth.Contract(abi, address);
@@ -51,31 +81,60 @@ async function getContract(_web3, abi, address) {
   }
 }
 
-async function getBalancesForAll(network, account){
-  let balanceData ={}
-  //for every token in the list, get teh balance with open sea api
-  let query = 'https://rinkeby-api.opensea.io/api/v1/assets?owner='+account
-  let res = await fetch(query)
-  let assetData = await res.json()
-  //populate with keys and value []
+async function getBalancesForAll(_web3, network, account){
+  let balanceData = {} // if (typeof balanceData['addr'] === "object") {ERC721} else {ERC20}
+
+  // ERC721s
+  // populate with keys and value []
   for (let key in ERC721s[network]){
     balanceData[ERC721s[network][key].address] = []
   }
-  for(let key in assetData.assets){
-    let assetSymbol = assetData.assets[key].asset_contract.symbol
-    let assetAddres = assetData.assets[key].asset_contract.address
-    if(ERC721s[network].hasOwnProperty(assetSymbol)){
-      balanceData[assetAddres].push(parseInt(assetData.assets[key].token_id))
+  // get all ERC721 assets owned by current account
+  let query = 'https://rinkeby-api.opensea.io/api/v1/assets?owner='+account
+  let res = await fetch(query).catch((err) => {alert('no open sea')})
+  let assetData = await res.json()
+  // for every token in the list, get user's balance
+  let assetSymbol;
+  let assetAddres;
+  for (let key in assetData.assets) {
+    assetSymbol = assetData.assets[key].asset_contract.symbol;
+    assetAddres = assetData.assets[key].asset_contract.address;
+    if (ERC721s[network].hasOwnProperty(assetSymbol)) {
+      balanceData[assetAddres].push(parseInt(assetData.assets[key].token_id));
     }
   }
+
+  // ERC20s
+  let addrs = [];
+  for (let key in ERC20s[network]){
+    balanceData[ERC20s[network][key].address] = 0;
+    addrs.push(ERC20s[network][key].address);
+  }
+  let token_contract;
+  for (let addr in addrs) {
+    token_contract = await getContract(_web3, abi20, addr);
+    res = await token_contract.methods.balanceOf(account).call({from : account});
+    balanceData[assetAddres] = parseInt(res);
+    /*
+    * @IAN: IF YOU THINK THIS IS NECESSARY - I DON'T THINK SO
+    */
+    assetSymbol = await token_contract.methods.symbol().call({from : account});
+    if(ERC20s[network].hasOwnProperty(assetSymbol)){
+      balanceData[addr] = parseInt(res)
+    }
+  }
+
   return balanceData
 }
 
-async function getTokenNameFromAddress(address){
+/*
+* `data` could be: "name", "image_url"
+*/
+async function getTokenDataFromAddress(address, data){
   let query = 'https://rinkeby-api.opensea.io/api/v1/asset_contract/' + address
-  let res = await fetch(query)
+  let res = await fetch(query).catch((err) => {alert('no rinkeby')})
   let formatRes = await res.json()
-  return formatRes.name
+  return formatRes[data]
 }
 
 async function getQuests(web3, network, account){
@@ -102,108 +161,106 @@ async function getQuests(web3, network, account){
   }
   return allQuests
 }
-
+/*
+* DON'T DELETE
+*/
 // async function getQuests(start, _limit, net, _web3) {
-//   let output = []
+//   let output = [];
 // 	try {
-//     let contract = await getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address)
-//     let totalQuests = await contract.questId.call((err, result) => { return result ? !err : err });
-//     // let max = Math.min(_limit, _max)
+//     let contract = await getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address);
+//     let totalQuests = await getTotalQuests(contract);
 //     let listedQuests = start;
 //     let parsedQuests = start;
 //     while (listedQuests < _limit && parsedQuests < totalQuests) {
-//       let next = await getAQuest(c, net, _web3)
-//       let open = await getQuestStatus(c, contract)
+//       let next = await getAQuest(parsedQuests, net, _web3)
+//       let open = await getQuestStatus(parsedQuests, contract)
 //       if (open) { output.push(next); listedQuests++ }
 //       parsedQuests++;
 //     }
 // 	} catch (err) {
 // 		console.log(err);
 // 	}
+//   return output;
 // }
 
-// async function getQuestStatus(id, contract) {
-//   try {
-// 		let ans = await contract.questExists.call(id)
-//     return ans;
-// 	} catch (err) {
-// 		console.log(err);
-// 	}
-// }
+async function getTotalQuests(_contract) {
+  return _contract.questId.call((err, result) => {
+    return result ? !err : err;
+  });
+}
 
-// async function getAQuest(id, contract) {
-//   let output = []
-// 	try {
-//     contract.QUESTS.call((id) => {
-//       //output.push(result2);
-//       output.push(id);
-//       c++;
-//     })
-// 		return output;
-// 	} catch (err) {
-// 		console.log(err);
-// 	}
-// }
+async function getQuestStatus(id, contract) {
+  return contract.questExists.call(id, (err, result) => {
+    return err ? err : result
+  })
+  // try {
+	// 	let ans = await contract.questExists.call(id, (err, result) => {})
+  //   return ans;
+	// } catch (err) {
+	// 	console.log(err);
+	// }
+}
 
-// let getQuests = (net, _web3, start, _limit) => {
-//   let output = []
-//   let contract = getContract(_web3, CONTRACT[net].abi, CONTRACT[net].address)
-//   let _max;
-//   contract.questId.call((err, result) => {
-//     if (!err) { _max = result }
-//   });
-//   let max = Math.min(_limit, _max)
-//   let c = start;
-//   while (c < max) {
-//     contract.questExists.call(c, (err, result) => {
-//       if (result) {
-//         contract.QUESTS.call(c, (err2, result2) => {
-//           output.push(result2);
-//           c++;
-//         })
-//       }
-//     })
-//   }
-// }
+async function getAQuest(id, contract) {
+  return contract.QUESTS.call(id, (err, result) => {
+    return err ? err : result
+    //output.push(result2);
+    // output.push(id);
+    // c++;
+  })
+  // let output = []
+	// try {
+  //   contract.QUESTS.call((id) => {
+  //     //output.push(result2);
+  //     output.push(id);
+  //     c++;
+  //   })
+	// 	return output;
+	// } catch (err) {
+	// 	console.log(err);
+	// }
+}
+
+async function createQuest(
+  account,
+  ourContract,
+  prizeTokenAddress,
+  prizeTokenId,
+  prizeTokenAmount,
+  prizeIsNFT,
+  requirementsList) {
+  ourContract.methods.createQuest(
+    prizeTokenAddress,
+    prizeTokenId,
+    prizeTokenAmount,
+    prizeIsNFT,
+    requirementsList
+   ).send({
+    from : account
+   }, function(err, res){
+    alert('Error in creating the quest!');
+  });
+}
+
+async function cancelQuest(account, ourContract, questId) {
+  ourContract.methods.cancelQuest(questId).send({
+    from : account
+   }, function(err, res){
+    alert('Error in cancelling the quest!');
+  });
+}
+
+async function completeQuest(account, ourContract, questId, submittedTokenIds) {
+  ourContract.methods.completeQuest(questId, submittedTokenIds).send({
+    from : account
+   }, function(err, res){
+    alert('Error in completing the quest!');
+  });
+}
+
+export { getWeb3, setupWeb3, getNetwork, getBalancesForAll, getQuests, getTokenDataFromAddress}
 
 
-export { getWeb3, setupWeb3, getNetwork, getBalancesForAll, getQuests, getTokenNameFromAddress}
-
-
-// let createQuest = () => {
-//   this.state.contract.methods.createQuest(
-//     // address _prizeTokenAddress,
-//     // uint _prizeTokenId,
-//     // uint _prizeTokenAmount,
-//     // bool _prizeIsNFT,
-//     // address[] memory _requirementsList
-//    ).send({
-//     from : this.state.account
-//    }, function(err, res){
-//     alert('Error in creating the quest!');
-//   });
-// }
-
-// let cancelQuest = (_this) => {
-//   this.state.contract.methods.cancelQuest(
-//     // uint _questId
-//    ).send({
-//     from : this.state.account
-//    }, function(err, res){
-//     alert('Error in cancelling the quest!');
-//   });
-// }
-
-// let completeQuest = (_this) => {
-//   this.state.contract.methods.completeQuest(
-//     // uint _questId
-//     // uint[] memory _submittedTokenIds
-//    ).send({
-//     from : this.state.account
-//    }, function(err, res){
-//     alert('Error in completing the quest!');
-//   });
-// }
 
 // let readQuest = (_this, qid) => {
 //   // Source: https://www.reddit.com/r/ethdev/comments/6us20e/accessing_struct_value_inside_of_map_using_web3/
@@ -230,21 +287,8 @@ export { getWeb3, setupWeb3, getNetwork, getBalancesForAll, getQuests, getTokenN
 //   });
 // }
 
-
-
 /// ///
 /// ///
-
-
-/*
-* WE NEED TO STORE ABI FOR ALL SUPPORTED TOKENS
-*
-*/
-
-/*
-ALSO: Ian: we only accept or disburse 721s?
-*/
-
 
 // let approvePursuit = (_state, tokenTicker, user, tokenId) => {
 //   let tokenContract = getContract(
