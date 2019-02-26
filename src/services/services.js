@@ -92,39 +92,41 @@ async function getBalancesForAll(_web3, network, account){
   account = '0xE98CD5eDA084e71fc1E0b9459EAe0A60a2282045'
   let query = 'https://rinkeby-api.opensea.io/api/v1/assets?owner='+account
   let res = await fetch(query).catch((err) => {alert('im dead inside')})
-  let x = await res.json()
-  console.log('hi', x)
+  let assetData = await res.json()
+  // console.log('hi', assetData)
   // for every token in the list, get user's balance
-  // let assetSymbol;
-  // let assetAddres;
-  // for (let key in assetData.assets) {
-  //   assetSymbol = assetData.assets[key].asset_contract.symbol;
-  //   assetAddres = assetData.assets[key].asset_contract.address;
-  //   if (ERC721s[network].hasOwnProperty(assetSymbol)) {
-  //     balanceData[assetAddres].push(parseInt(assetData.assets[key].token_id));
-  //   }
-  // }
+  let assetSymbol;
+  let assetAddres;
+  for (let key in assetData.assets) {
+    assetSymbol = assetData.assets[key].asset_contract.symbol;
+    assetAddres = assetData.assets[key].asset_contract.address;
+    if (ERC721s[network].hasOwnProperty(assetSymbol)) {
+      balanceData[assetAddres].push(parseInt(assetData.assets[key].token_id));
+    }
+  }
 
-  // // ERC20s
-  // let addrs = [];
-  // for (let key in ERC20s[network]){
-  //   balanceData[ERC20s[network][key].address] = 0;
-  //   addrs.push(ERC20s[network][key].address);
-  // }
-  // let token_contract;
-  // for (let addr in addrs) {
-  //   token_contract = await getContract(_web3, abi20, addr);
-  //   res = await token_contract.methods.balanceOf(account).call({from : account});
-  //   balanceData[assetAddres] = parseInt(res);
-  //   /*
-  //   * @IAN: IF YOU THINK THIS IS NECESSARY - I DON'T THINK SO
-  //   */
-  //   assetSymbol = await token_contract.methods.symbol().call({from : account});
-  //   if(ERC20s[network].hasOwnProperty(assetSymbol)){
-  //     balanceData[addr] = parseInt(res)
-  //   }
-  // }
-
+  // ERC20s
+  console.log('balanceData', balanceData)
+  let addrs = [];
+  for (const [_, value] of Object.entries(ERC20s[network])) {
+    balanceData[value.address] = 0;
+    addrs.push(value.address);
+    console.log(value)
+  }
+  let token_contract;
+  for(let i = 0; i < addrs.length; i++) {
+    token_contract = await getContract(_web3, abi20, addrs[i]);
+    res = await token_contract.methods.balanceOf(account).call({from : account});
+    balanceData[assetAddres] = parseInt(res);
+    /*
+    * @IAN: IF YOU THINK THIS IS NECESSARY - I DON'T THINK SO
+    */
+    assetSymbol = await token_contract.methods.symbol().call({from : account});
+    if(ERC20s[network].hasOwnProperty(assetSymbol)){
+      balanceData[addrs[i]] = parseInt(res)
+    }
+  }
+  console.log(balanceData)
   return balanceData
 }
 
