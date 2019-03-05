@@ -39,9 +39,9 @@ const ERC20s = {
 
 
   'Rinkeby': {
-    '"KITTYR"': {
-      'name': 'Crypto Kitties Rinkeby',
-      'address': '"0x16baf0de678e52367adc69fd067e5edd1d33e3bf"',
+    'ZRX': {
+      'name': '0x',
+      'address': '0x6dfdc815412ca7159c82aee6f1b7e45ccc4b5d54',
       'abi': []
     }
   }

@@ -1,13 +1,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'
 
-const Nav = (props) => {
+const Nav = props => (
   //https://placeholdit.imgix.net/~text?txtsize=33&txt=318%C3%97180&w=318&h=180
-  return (
     <div className="nav">
       <div id="navLeft">
         <NavLink to="/log" >
-        < h1 className="whiteText">Pursuit</h1>
+        < h1 className="whiteText">Skrypts</h1>
         </NavLink>
       </div>
       <div id="navRight">
@@ -22,7 +21,6 @@ const Nav = (props) => {
         </NavLink>
       </div>
     </div>
-  )
-}
+)
 
 export default Nav;

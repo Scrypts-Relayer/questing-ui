@@ -44,6 +44,9 @@ h6{
   font-size: 16px;
 }
 
+.greyText{
+  color: #626262;
+}
 .whiteText {
   color: white;
 }
@@ -70,6 +73,15 @@ html, body{
 .App {
   min-height: calc(100vh-$nav-height);
   background-color:  #FBFBFB;
+}
+
+
+.warning{
+  z-index: 200;
+  position: absolute;
+  height: 400px;
+  width: 800px;
+  background-color: red;
 }
 
 .nav {
@@ -235,6 +247,153 @@ html, body{
   opacity: 0.9;
 }
 
+.CompleteOverlay{
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#completeCloseIcon{
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+}
+
+.blurred{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(11, 11, 23);
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.overLayBox{
+  min-height: 300px;
+  width: 900px;
+  background-color: white;
+  opacity: 1;
+  position: fixed;
+  top: 160px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 40px 0;
+}
+
+#questCompleteImage{
+  width: 60px;
+  margin-top: 40px;
+  margin-bottom: 10px;
+}
+#completeHelpText{
+  width: 70%;
+  margin-top: 20px;
+  text-align: center;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+}
+.completeTable{
+  width: 600px;
+  margin-top: 20px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 100px; 
+  position: relative;
+}
+.ctHeader{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  background-color: #F9FAFC;
+  padding: 0 20px;
+}
+
+.ctRow{
+  width: calc(100%-40px);
+  border-bottom: 1px solid #CFCECE;
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+
+#questReqTableImg{
+  width: 20px;
+}
+
+.tokenIdInputComplete{
+  height: 24px;
+  width: 100px;
+  text-align: center;
+}
+
+#completeReqTitle{
+  width: 120px;
+}
+
+.submitTokenIdNum{
+  width: 100px;
+  height: 26px;
+  border-radius: 20px;
+  background-color: $purple;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.submitTokenIdNum:hover{
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+#inactive{
+  opacity: 0.4;
+  cursor: auto;
+}
+
+#submitStatus{
+  text-align: right;
+  width: 100px;
+}
+
+.completeQuestOverlayButton{
+  width: 140px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: $purple;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 150px;
+  bottom: 40px;
+}
+
+.completeQuestOverlayButton:hover{
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+// ---------------CREATE -------------------------------------------------//
 .createPage{
   padding-top: $nav-height;
   margin-top: 40px;
@@ -547,6 +706,8 @@ html, body{
 #previousButton:hover{
   cursor: pointer;
 }
+
+
 
 ///breakpoints
 @media only screen and (max-width: 1200px) {

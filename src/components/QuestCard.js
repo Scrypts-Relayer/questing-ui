@@ -14,7 +14,7 @@ class QuestCard extends Component {
           return(
             <QuestReqItem 
               reqName={name}
-              balance ={balance > 0 ? 1 : 0}
+              balance={balance > 0 ? 1 : 0}
               key={i}
             />
           )
@@ -25,7 +25,6 @@ class QuestCard extends Component {
 
   getPrizeName(address){
     let name = ''
-    //let name = 'Token Address : ' + nfts[this.props.network][address].address
     for(let nft in nfts[this.props.network]){
       let k1 = nfts[this.props.network][nft].address
       let k2 = address.toLowerCase()
@@ -49,7 +48,7 @@ class QuestCard extends Component {
           <div className="questReqContainer">
             {this.generateRequirements()}
           </div>
-          <div className="questSubmit">
+          <div className="questSubmit" onClick={(e) => this.props.toggleOverlay(this.props.quest)}>
             <h4 className="whiteText">Complete</h4>
           </div>
           <h4 id="questIdText">questID : {this.props.id}</h4>
