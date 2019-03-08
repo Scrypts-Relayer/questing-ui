@@ -29,8 +29,8 @@ class Log extends Component {
     // await checkOwner(2, this.props.web3)
     // await completeQuest(this.props.web3, this.props.account, 3, [71])
     // await checkOwner(3, this.props.web3)
-    let bals = await getBalancesForAll(this.props.net, this.props.account)
-    let questRes = await getQuests(this.props.web3, this.props.net, this.props.account);  
+    let bals = await getBalancesForAll(this.props.network, this.props.account)
+    let questRes = await getQuests(this.props.web3, this.props.network, this.props.account);  
     this.setState({
       quests : questRes,
       balances : bals
