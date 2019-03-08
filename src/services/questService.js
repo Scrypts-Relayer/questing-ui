@@ -1,7 +1,7 @@
 import ERC721s from '../assets/erc721s';
 import ERC20s from '../assets/erc20s';
 import abi721 from '../assets/erc721_abi';
-// import abi20 from '../assets/erc20_abi';
+import abi20 from '../assets/erc20_abi';
 
 import CONTRACT from '../assets/contract';
 // import bin_uint from "./bytecode/bin_uint"
