@@ -9,6 +9,8 @@ import CONTRACT from '../assets/contract';
 // import bin_str from "./bytecode/bin_str"
 // import abi_str from "./abi/abi_str"
 
+import fakeNFT from '../assets/fakeNFT'
+
 
 export async function setApproval(_web3, network, address, id, account) {
   try {
@@ -20,12 +22,11 @@ export async function setApproval(_web3, network, address, id, account) {
   }
 }
 
-export async function getApproval(_web3, network, address, id, account) {
+export async function setApprovalFor20(_web3, network, address, id, account) {
   try {
-    let token_contract = await getContract(_web3, abi721, address)
-    console.log(token_contract.methods)
-    let res = await token_contract.methods.ownerOf(id).call({from : account})
-    console.log(res);
+    let token_contract = await getContract(_web3, abi20, address)
+    await token_contract.methods.approve(CONTRACT[network].address, id).call({from : account})
+    console.log(`Successful approval for token id ${id}!`);
   } catch (err) {
     console.log(err);
   }
@@ -41,16 +42,17 @@ export async function getContract(_web3, abi, address) {
 }
 
 
-export async function getBalancesForAll(_web3, network, account){
-  let balanceData = {} // if (typeof balanceData['addr'] === "object") {ERC721} else {ERC20}
-  // ERC721s
+export async function getBalancesForAll(network, account){
+  let balanceData = {} 
   // populate with keys and value []
   for (let key in ERC721s[network]){
+    //use address as key and set balance array to empty 
     balanceData[ERC721s[network][key].address] = []
   }
+  console.log(account)
   // get all ERC721 assets owned by current account
   let query = 'https://rinkeby-api.opensea.io/api/v1/assets?owner='+account+'&api_key=e4f5e442e7664e3eb56fd7c415cf6128'
-  let res = await fetch(query).catch((err) => {alert('im dead inside')})
+  let res = await fetch(query).catch((err) => {alert('could get balance')})
   let assetData = await res.json()
   // for every token in the list, get user's balance
   let assetSymbol;
@@ -62,34 +64,18 @@ export async function getBalancesForAll(_web3, network, account){
       balanceData[assetAddres].push(parseInt(assetData.assets[key].token_id));
     }
   }
-  // // ERC20s
-  // let addrs = [];
-  // for (const [_, value] of Object.entries(ERC20s[network])) {
-  //   balanceData[value.address] = 0;
-  //   addrs.push(value.address);
-  // }
-  // let token_contract;
-  // for(let i = 0; i < addrs.length; i++) {
-  //   token_contract = await getContract(_web3, abi20, addrs[i]);
-  //   res = await token_contract.methods.balanceOf(account).call({from : account});
-  //   balanceData[assetAddres] = parseInt(res);
-    
-  // }
+  //for testing purposes 
+  balanceData['0x7bcD4667086d271070Ae32D92782D1e692a239EA'.toLowerCase()] = [8]
   return balanceData
 }
 
-/*
-* `data` could be: "name", "image_url"
-*/
-export async function getTokenDataFromAddress(address){
-  let query = 'https://rinkeby-api.opensea.io/api/v1/asset/' + address + '/972'
-  let res = await fetch(query).catch((err) => {alert('no rinkeby')})
-  let formatRes = await res.json()
-  return formatRes
+
+export async function getImageUrl(address){
+
 }
 
-export function getPrizeName(address, network){
-  let name = 'Prize token name not found'
+export function getName(address, network){
+  let name = address.slice(0,8) + '...'
   for(let nft in ERC721s[network]){
     let k1 = ERC721s[network][nft].address
     let k2 = address.toLowerCase()
@@ -107,6 +93,7 @@ export function getPrizeName(address, network){
   return name;
 }
 
+
 export async function getQuests(web3, network, account){
   let contract = await getContract(web3, CONTRACT[network].abi, CONTRACT[network].address)
   let questId = await contract.methods.getId().call({from : account})
@@ -119,29 +106,34 @@ export async function getQuests(web3, network, account){
       let req = await contract.methods.getReqAddress(i, j).call({from : account})
       reqs.push(req)
     }
-    //let open = await contract.methods.questExists(i).call();
-    let newQuest = {
-      reqs : reqs,
-      prizeAddress : quest.prizeTokenAddress,
-      prizeName : getPrizeName(quest.prizeTokenAddress, network),
-      prizeAmt : quest.prizeTokenAmount,
-      prizeTokenId : quest.prizeTokenId,
-      id : i
-    }
-    allQuests.push(newQuest)
+    let open = await contract.methods.questExists(i).call();
+    if(open){
+      let newQuest = {
+        reqs : reqs,
+        prizeAddress : quest.prizeTokenAddress,
+        prizeName : getName(quest.prizeTokenAddress, network),
+        prizeAmt : quest.prizeTokenAmount,
+        prizeTokenId : quest.prizeTokenId,
+        id : i
+      }
+      allQuests.push(newQuest)
+   }
   }
   return allQuests
 }
 
 export async function createQuest(
+  web3, 
+  network,
   account,
-  ourContract,
   prizeTokenAddress,
   prizeTokenId,
   prizeTokenAmount,
   prizeIsNFT,
   requirementsList) {
-  ourContract.methods.createQuest(
+    let ourContract = await getContract(web3, CONTRACT[network].abi,CONTRACT[network].address)
+    console.log(ourContract)
+    ourContract.methods.createQuest(
     prizeTokenAddress,
     prizeTokenId,
     prizeTokenAmount,
@@ -150,7 +142,7 @@ export async function createQuest(
    ).send({
     from : account
    }, function(err, res){
-    alert('Error in creating the quest!');
+    alert('creating the quest!');
   });
 }
 
@@ -162,12 +154,33 @@ export async function cancelQuest(account, ourContract, questId) {
   });
 }
 
-export async function completeQuest(account, ourContract, questId, submittedTokenIds) {
+export async function completeQuest(web3, account, questId, submittedTokenIds) {
+  let ourContract = await getContract(web3, CONTRACT['Rinkeby'].abi, CONTRACT['Rinkeby'].address)
   ourContract.methods.completeQuest(questId, submittedTokenIds).send({
     from : account
    }, function(err, res){
     alert('Error in completing the quest!');
   });
+}
+
+export async function checkSubmission(web3, reqAddress, bals){
+  if(bals.hasOwnProperty(reqAddress.toLowerCase())){
+    let balance = bals[reqAddress.toLowerCase()]
+    if (balance.length === 0){
+      return false
+    }
+    for (let token in bals[reqAddress.toLowerCase()]){
+      let nft = bals[reqAddress.toLowerCase()][token]
+      //now check if we are approved 
+      let reqContract = await getContract(web3, fakeNFT['Rinkeby'].abi, reqAddress)
+      console.log(reqContract)
+      let approved = await reqContract.methods.getApproved(nft).call()
+      if (approved === CONTRACT['Rinkeby'].address){
+        return nft
+      }
+    }
+  } 
+  return false
 }
 
 

@@ -6,7 +6,7 @@ const Nav = props => (
     <div className="nav">
       <div id="navLeft">
         <NavLink to="/log" >
-        < h1 className="whiteText">Skrypts</h1>
+        < h1 className="whiteText">Scrypts</h1>
         </NavLink>
       </div>
       <div id="navRight">

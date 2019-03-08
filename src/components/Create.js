@@ -10,7 +10,7 @@ class Create extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      step : 1,
+      step : 2,
       title : '',
       selectedReqs : new Set(),
       selectedPrize : 'CK',
@@ -19,7 +19,8 @@ class Create extends Component {
       amtError : false,
       amount : 1,
       tokenId : 0,
-      nftSelected : true
+      nftSelected : true,
+      showDropwDown : true,
     };
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this)
@@ -113,18 +114,30 @@ class Create extends Component {
   }
 
   add(key){
+    //if theres 2 and about to be 3
+    let show = true;
+    if(this.state.selectedReqs.size ===2){
+      show = false
+    }
     const old = this.state.selectedReqs;
     const newSet = old.add(key)
     this.setState({
-      selectedReqs : newSet
+      selectedReqs : newSet,
+      showDropwDown : show
     })
   }
 
   remove(key){
+    //if theres 2 and about to be 3
+    let show = true;
+    if(this.state.selectedReqs.size <=3){
+      show = true
+    }
     const old = this.state.selectedReqs;
     old.delete(key)
     this.setState({
-      selectedReqs : old
+      selectedReqs : old,
+      showDropwDown : show
     })
   }
 
@@ -192,6 +205,13 @@ class Create extends Component {
     }
   }
 
+  toggleOverlay(quest) { 
+    this.setState({
+      overlay : !this.state.overlay,
+      selectedQuest : quest
+    })
+  }
+
   selectPage() {
     if(this.state.step === 1){
       return (
@@ -215,11 +235,11 @@ class Create extends Component {
           <div className="createCard" id="reqSelect">
           {this.state.reqError ? <h3 className="errorText" id="reqError">You must select at least 1 requirement!</h3> : ''}   
             <div className="createRow">
-              <h3 style={{marginBottom:'20px'}}>Quest Requirements</h3>
+              <h3 style={{marginBottom:'20px'}}>Quest Requirements (Max 3)</h3>
             </div>
               {this.populateSelectedReqs()}
             <div className="createRow">
-              <DropDownList add={this.add} />
+              {this.state.showDropwDown ? <DropDownList add={this.add} /> : ''}
             </div>
             <hr id="createRule"/>
             <p className="bottomText">Users must submit each item in order to complete the quest.</p>
@@ -235,6 +255,16 @@ class Create extends Component {
     } else {
       return (
         <div className="createPage">
+          <div className='blurred'/>
+          <div className='overLayBox' id="createOverlay">
+            <h2 className="greyText" id="creatCheckHeader">Create Quest</h2>
+            <h3 id="createSubText">You are about to create a quest. Make sure you are the
+              owner of the selected prize or your quest will not be 
+              created. Once you click complete you will be prompted to send your
+              prize into escrow. You can cancel and retrieve your prize from
+              escrow at any time until the quest is completed.
+            </h3>
+          </div>
           <div className="headerTextCreate">
             <div className="" onClick={this.togglePage} id="previousButton">
               <h4 className="">{'<- Previous'}</h4>

@@ -4,7 +4,7 @@ const CONTRACT = {
     'abi': []
   },
   'Rinkeby': {
-    'address': '0xc0236eEd0818542F4b8F83B24f4d3649054670dF',
+    'address': '0x00F747C5A29559494090D72c2a907aE4A387A776',
     'abi': [
       {
         "constant": true,
@@ -60,6 +60,26 @@ const CONTRACT = {
         "stateMutability": "view",
         "type": "function",
         "signature": "0x4de637cc"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "name": "questExists",
+        "outputs": [
+          {
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function",
+        "signature": "0x75be329b"
       },
       {
         "constant": true,
@@ -253,7 +273,7 @@ const CONTRACT = {
         "signature": "0xfe90ff7d"
       },
       {
-        "constant": false,
+        "constant": true,
         "inputs": [
           {
             "name": "_tokenAddress",
@@ -268,7 +288,7 @@ const CONTRACT = {
           }
         ],
         "payable": false,
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
         "type": "function",
         "signature": "0x0a028476"
       },

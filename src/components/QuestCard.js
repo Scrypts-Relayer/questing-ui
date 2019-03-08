@@ -2,7 +2,7 @@ import React, { Component} from "react";
 import '../App.scss'
 import QuestReqItem from './QuestReqItem'
 import ckImage from '../assets/img/ck.png'
-import nfts from '../assets/erc721s'
+import {getName, getImageUrl} from '../services/questService'
 class QuestCard extends Component {
 
   generateRequirements(){
@@ -10,7 +10,7 @@ class QuestCard extends Component {
       return (
         this.props.reqKeys.map((key, i)=>{
           let balance = this.props.balances[key.toLowerCase()]
-          let name = this.getPrizeName(key)
+          let name = getName(key, this.props.network)
           return(
             <QuestReqItem 
               reqName={name}
@@ -23,24 +23,12 @@ class QuestCard extends Component {
     }
   }
 
-  getPrizeName(address){
-    let name = ''
-    for(let nft in nfts[this.props.network]){
-      let k1 = nfts[this.props.network][nft].address
-      let k2 = address.toLowerCase()
-      if(k1 === k2){
-        name = nfts[this.props.network][nft].name
-      }
-    }
-    return name;
-  }
-
   render() {
     return (
       <div className="questCard">
         <div className="qcardTop">
           <p className="boldGrey">Reward</p>
-          <h6>{this.props.amt} {this.getPrizeName(this.props.prizeAddress)}</h6>
+          <h6>{this.props.amt} {getName(this.props.prizeAddress, this.props.network)}</h6>
           <img id="questCardImage" src={ckImage} alt={''} />
         </div>
         <div className="qcardBottom">

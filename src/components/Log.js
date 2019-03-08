@@ -2,8 +2,8 @@ import React, { Component} from "react";
 import '../App.scss'
 import QuestCard from './QuestCard'
 import CompleteOverlay from './CompleteOverlay'
-import {getBalancesForAll, getQuests, getContract} from '../services/questService'
-import {getFake} from '../services/testing'
+import {mintToMe, transferEscrow, checkOwner} from '../services/testing'
+import {getBalancesForAll, getQuests, getImageUrl, createQuest, completeQuest} from '../services/questService'
 
 class Log extends Component {
 
@@ -12,21 +12,36 @@ class Log extends Component {
     this.state = {
       overlay : false,
       selectedQuest : null,
-      quests : []
+      quests : [],
+      showHelp : false
     };
     this.toggleOverlay = this.toggleOverlay.bind(this)
+    this.hideHelp = this.hideHelp.bind(this)
+    this.showHelp = this.showHelp.bind(this)
   }
 
   async componentWillMount(){
-    let fake = await getFake(this.props.web3)
-    console.log(fake)
-    let bals = await getBalancesForAll(this.props.web3, this.props.net, this.props.account)
+    // await mintToMe(this.props.web3, this.props.account, 70)
+    // await checkOwner(0, this.props.web3)
+    // await transferEscrow(this.props.web3, this.props.account)
+    // await checkOwner(1, this.props.web3)
+    // await createQuest(this.props.web3, this.props.net, this.props.account, '0x7bcD4667086d271070Ae32D92782D1e692a239EA', 70, 1, true, ['0x7bcD4667086d271070Ae32D92782D1e692a239EA'])
+    // await checkOwner(2, this.props.web3)
+    // await completeQuest(this.props.web3, this.props.account, 3, [71])
+    // await checkOwner(3, this.props.web3)
+    let bals = await getBalancesForAll(this.props.net, this.props.account)
     let questRes = await getQuests(this.props.web3, this.props.net, this.props.account);  
     this.setState({
       quests : questRes,
       balances : bals
     })
   }
+
+  helpOverlay = () => (
+    <div className="helpOverlay">
+      <h3>Complete a quest to exchange requirement tokens for a prize. This screen shows all available quests that you can complete.</h3>
+    </div>
+  )
 
   getQuestData() {
     return (
@@ -56,6 +71,18 @@ class Log extends Component {
     })
   }
 
+  showHelp(){
+    this.setState({
+      showHelp : true
+    })
+  }
+
+  hideHelp(){
+    this.setState({
+      showHelp : false
+    })
+  }
+
   render() {
     return (
       <div className="log">
@@ -64,13 +91,22 @@ class Log extends Component {
           toggleOverlay={this.toggleOverlay} 
           quest={this.state.selectedQuest}
           balances={this.state.balances}
-          network={this.props.network}         
+          network={this.props.network}  
+          web3 = {this.props.web3}       
         /> 
         : ''}
+        {this.state.showHelp ? this.helpOverlay() : ''}
         <div className="questContainer">
           <div className="questHeader">
             <h3>Quests Available</h3>
-            <p className="infoText" id="headerInfoText">(What is this?)</p>
+            <p 
+              className="infoText" 
+              id="headerInfoText" 
+              onMouseEnter={this.showHelp}
+              onMouseLeave={this.hideHelp}
+            >
+                (What is this?) 
+            </p>
           </div>
           <div className="questCardGrid">
             {this.getQuestData()}

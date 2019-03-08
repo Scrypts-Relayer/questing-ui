@@ -2,34 +2,63 @@ import React, { Component} from "react";
 import '../App.scss'
 import icon from '../assets/img/ck.png'
 import closeIcon from '../assets/img/letter-x.png'
-import {getPrizeName} from '../services/questService'
+import {getName, checkSubmission} from '../services/questService'
 
 class CompleteOverlay extends Component {
 
-  getReqs(){
+  constructor(props) {
+    super(props);
+    this.state = {
+      submittedKey :  {},
+      allSubmitted : true
+    };
+  }
+
+  async componentWillMount(){
+    await this.checkIfSubmitted()
+  }
+
+   getReqs(){
     return (
       this.props.quest.reqs.map((key, i)=>{
-        let name = getPrizeName(key, this.props.network)
-        let submitted = this.checkIfSubmitted(key)
+        let name = getName(key, this.props.network)
         return(
           <div className="ctRow" key={i}>
             <img src={icon} alt={''} id="questReqTableImg"/>
             <h3 className="greyText" id="completeReqTitle">{name}</h3>
-            {submitted ? <h3 className="greyText">tokenId: 978</h3> :  <input className="tokenIdInputComplete" placeholder="tokenId"/>}
-            <div className="submitTokenIdNum" id={submitted ? 'inactive' : ''}>
+            {this.state.submittedKey[key] !== false ? <h3 className="greyText" id="tokenIdTextOverlay">tokenId: {this.state.submittedKey[key]}</h3> :  <input className="tokenIdInputComplete" placeholder="tokenId"/>}
+            <div className="submitTokenIdNum" id={this.state.submittedKey[key] !== false ? 'inactive' : ''}>
               <h5 className="whiteText">Submit</h5>
             </div>
-            <h5 className="greyText" id="submitStatus">{submitted ? 'Submitted' : 'Unsubmitted'}</h5>
+            <h5 className="greyText" id="submitStatus">{this.state.submittedKey[key] !== false ? 'Submitted' : 'Unsubmitted'}</h5>
           </div>
         )
       })
     )
   }
 
-  checkIfSubmitted(address){
-    return false;
-    //check if we are the approved escrow account for the requirement
-
+  async checkIfSubmitted(){
+    let submittedKey = {}
+    this.props.quest.reqs.map(async (key, i)=>{
+      let res;
+      try {
+        res = await checkSubmission(this.props.web3, key, this.props.balances)
+      } catch (error){
+        res = false
+      }
+      if(res !== false){
+        submittedKey[key] = res
+        this.setState({
+          submittedKey : submittedKey
+        })
+      } else {
+        submittedKey[key] = false
+        this.setState({
+          submittedKey : submittedKey,
+          allSubmitted : false
+        })
+      }
+    })
   }
 
   render() {
@@ -50,7 +79,7 @@ class CompleteOverlay extends Component {
             </div>
             {this.getReqs()}
           </div>
-          <div className="completeQuestOverlayButton">
+          <div className="completeQuestOverlayButton" id={this.state.allSubmitted ? '' : 'inactive'}>
             <h5 className="whiteText">Complete</h5>
           </div>
         </div>

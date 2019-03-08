@@ -39,7 +39,8 @@ const ERC721s = {
     'KITTYR': {
       'name': 'Crypto Kitties RB',
       'address': '0x16baf0de678e52367adc69fd067e5edd1d33e3bf',
-      'abi': abi721
+      'abi': abi721,
+      'imageUrl' : ''
     }
   }
 }

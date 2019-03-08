@@ -2,7 +2,7 @@ $purple : #7231FC;
 $nav-height: 100px;
 $main-font : 'Ubuntu', sans-serif;
 
-
+//------------GLOBAL--------------/
 * {
   margin: 0;
   font-family: $main-font;
@@ -67,13 +67,14 @@ a {
 }
 
 html, body{
-  background-color:  #FBFBFB;
+  background-color:  white;
 }
 
 .App {
   min-height: calc(100vh-$nav-height);
-  background-color:  #FBFBFB;
+  background-color:  white;
 }
+
 
 
 .warning{
@@ -83,6 +84,8 @@ html, body{
   width: 800px;
   background-color: red;
 }
+
+//---------------NAV-----------------------
 
 .nav {
   background-color: $purple;
@@ -109,6 +112,8 @@ html, body{
   justify-content: space-between;
   width: 260px;
 }
+
+//------------------QUEST LOG PAGE ----------------------
 
 .log {
   width: 100%;
@@ -144,6 +149,11 @@ html, body{
 
 #headerInfoText{
   margin-left: 10px;
+
+}
+
+#headerInfoText:hover{
+  cursor: pointer;
 }
 
 .questCard{
@@ -195,6 +205,7 @@ html, body{
   justify-content: flex-start;
   align-items: center;
   padding: 20px 0px;
+  height: 120px;
 }
 
 #rwdText{
@@ -247,6 +258,26 @@ html, body{
   opacity: 0.9;
 }
 
+.helpOverlay{
+  z-index: 400;
+  line-height: 24px;
+  width: 280px;
+  border-radius: 10px;
+  position: absolute;
+  background-color: white;
+  margin-left: 290px;
+  opacity: 0.8;
+  top: 130px;
+  display: flex;
+  flex-direction: row;
+  padding: 30px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+//--------------QUEST OVERLAY
+
 .CompleteOverlay{
   position: absolute;
   height: 100vh;
@@ -269,11 +300,12 @@ html, body{
 
 .blurred{
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: rgb(11, 11, 23);
   opacity: 0.6;
   cursor: pointer;
+  z-index: 90;
 }
 
 .overLayBox{
@@ -288,6 +320,7 @@ html, body{
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  z-index: 99;
   padding: 40px 0;
 }
 
@@ -337,6 +370,11 @@ html, body{
 
 #questReqTableImg{
   width: 20px;
+}
+
+#tokenIdTextOverlay{
+  width: 100px;
+  text-align: center;
 }
 
 .tokenIdInputComplete{
@@ -403,7 +441,7 @@ html, body{
   justify-content: center;
   align-items: center;
   padding-bottom: 100px;
-
+  position: relative;
 }
 
 .headerTextCreate{
@@ -638,8 +676,6 @@ html, body{
   align-items: center;
 }
 
-
-
 .prizeCard:hover{
   cursor: pointer;
   border: 1px solid $purple;
@@ -707,7 +743,21 @@ html, body{
   cursor: pointer;
 }
 
+#createOverlay{
+  padding: 40px;
+}
 
+#createSubText{
+  width: 80%;
+  line-height: 24px;
+}
+
+
+#creatCheckHeader{
+  margin-bottom: 30px;
+}
+
+///-------------------------rsponsive 
 
 ///breakpoints
 @media only screen and (max-width: 1200px) {

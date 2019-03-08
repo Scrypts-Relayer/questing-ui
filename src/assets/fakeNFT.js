@@ -4,7 +4,7 @@ const fakeNFT = {
     'abi': []
   },
   'Rinkeby': {
-    'address': '0x6Efd5DbdCb70367686e924A676A142713aea20A5',
+    'address': '0x7bcD4667086d271070Ae32D92782D1e692a239EA',
     'abi': [
       {
         "constant": true,
