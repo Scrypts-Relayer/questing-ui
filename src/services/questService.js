@@ -49,7 +49,6 @@ export async function getBalancesForAll(network, account){
     //use address as key and set balance array to empty 
     balanceData[ERC721s[network][key].address] = []
   }
-  console.log(account)
   // get all ERC721 assets owned by current account
   let query = 'https://rinkeby-api.opensea.io/api/v1/assets?owner='+account+'&api_key=e4f5e442e7664e3eb56fd7c415cf6128'
   let res = await fetch(query).catch((err) => {alert('could get balance')})
