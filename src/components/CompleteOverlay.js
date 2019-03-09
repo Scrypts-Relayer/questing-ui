@@ -2,7 +2,7 @@ import React, { Component} from "react";
 import '../App.scss'
 import icon from '../assets/img/ck.png'
 import closeIcon from '../assets/img/letter-x.png'
-import {getName, checkSubmission} from '../services/questService'
+import {getName, checkSubmission, completeQuest, getOrder, addr2Bal} from '../services/questService'
 
 class CompleteOverlay extends Component {
 
@@ -10,7 +10,7 @@ class CompleteOverlay extends Component {
     super(props);
     this.state = {
       submittedKey :  {},
-      allSubmitted : true
+      allSubmitted : false
     };
   }
 
@@ -27,7 +27,7 @@ class CompleteOverlay extends Component {
             <img src={icon} alt={''} id="questReqTableImg"/>
             <h3 className="greyText" id="completeReqTitle">{name}</h3>
             {this.state.submittedKey[key] !== false ? <h3 className="greyText" id="tokenIdTextOverlay">tokenId: {this.state.submittedKey[key]}</h3> :  <input className="tokenIdInputComplete" placeholder="tokenId"/>}
-            <div className="submitTokenIdNum" id={this.state.submittedKey[key] !== false ? 'inactive' : ''}>
+            <div className="submitTokenIdNum" id={this.state.submittedKey[key] !== false ? 'inactive' : ''} onClick={(key) => this.submitOne(key)}>
               <h5 className="whiteText">Submit</h5>
             </div>
             <h5 className="greyText" id="submitStatus">{this.state.submittedKey[key] !== false ? 'Submitted' : 'Unsubmitted'}</h5>
@@ -37,10 +37,11 @@ class CompleteOverlay extends Component {
     )
   }
 
-  async checkIfSubmitted(){
+  async checkIfSubmitted(){ // during componentDidMount, called once
     let submittedKey = {}
     this.props.quest.reqs.map(async (key, i)=>{
       let res;
+      key = key.toLowerCase()
       try {
         res = await checkSubmission(this.props.web3, key, this.props.balances)
       } catch (error){
@@ -49,16 +50,49 @@ class CompleteOverlay extends Component {
       if(res !== false){
         submittedKey[key] = res
         this.setState({
-          submittedKey : submittedKey
+          submittedKey
         })
       } else {
         submittedKey[key] = false
         this.setState({
-          submittedKey : submittedKey,
+          submittedKey,
           allSubmitted : false
         })
       }
     })
+  }
+
+  checkIfSubmittedAfterLoad(){
+    let allSubmitted = false;
+    this.props.quest.reqs.map(async (key, i)=>{
+      allSubmitted = allSubmitted && i;
+      this.setState({ allSubmitted })
+    })
+  }
+
+  submitOne = async (addr) => {
+    try {
+      await checkSubmission(this.props.web3, addr, this.props.balances);
+      this.checkIfSubmittedAfterLoad();
+    } catch(err) {
+      alert('ERROR IN submitOne(): ', err)
+    }
+  }
+
+  handleCompleteQuest = async () => {
+    try {
+      alert('BEGIN LOADING: QUEST COMPLETION')
+      let order = await getOrder(this.props.quest.id, this.props.web3, this.props.network, this.props.account)
+      // let ls = addr2Bal(order, this.props.balances, this.state.submittedKey)
+      let ls = addr2Bal(order, this.state.submittedKey)
+      console.log('ls',ls)
+      console.log('ls[0]',ls[0])
+
+      await completeQuest(this.props.web3, this.props.network, this.props.account, this.props.quest.id, ls)
+      alert('END LOADING: completeQuest() FINISHED FROM CompleteOverlay.js > handleCompleteQuest()! ')
+    } catch(err) {
+      alert('ERROR IN handleCompleteQuest(): ', err)
+    }
   }
 
   render() {
@@ -79,7 +113,9 @@ class CompleteOverlay extends Component {
             </div>
             {this.getReqs()}
           </div>
-          <div className="completeQuestOverlayButton" id={this.state.allSubmitted ? '' : 'inactive'}>
+          <div className="completeQuestOverlayButton"
+               id={this.state.allSubmitted ? '' : 'inactive'}
+               onClick={() => this.handleCompleteQuest()}>
             <h5 className="whiteText">Complete</h5>
           </div>
         </div>

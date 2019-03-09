@@ -10,30 +10,26 @@ export async function getFake(web3){
   }
 }
 
-let thex = 0;
-
 export async function mintToMe(web3, account, x){
   let instance =  await new web3.eth.Contract(fakeNFT['Rinkeby'].abi, fakeNFT['Rinkeby'].address);
     console.log(instance)
   // console.log(account)
-    thex = x
     await instance.methods.mint(account, x).send({from: account})
-    await instance.methods.mint(account, x+1).send({from: account})
+    // await instance.methods.mint(account, x+1).send({from: account})
     //let balance = await instance.methods.getApproved(43).call()
     //console.log(balance)
-    console.log('done 1')
+    console.log('done', x)
 }
 
-export async function transferEscrow(web3, account){
+export async function transferEscrow(web3, account, x){
   let instance =  await new web3.eth.Contract(fakeNFT['Rinkeby'].abi, fakeNFT['Rinkeby'].address);
-  await instance.methods.approve(CONTRACT['Rinkeby'].address, 80).send({from : account})
-  await instance.methods.approve(CONTRACT['Rinkeby'].address, 81).send({from : account})
+  await instance.methods.approve(CONTRACT['Rinkeby'].address, x).send({from : account})
 }
 
-export async function checkOwner(id, web3){
+export async function checkOwner(id, web3, x){
   let instance =  await new web3.eth.Contract(fakeNFT['Rinkeby'].abi, fakeNFT['Rinkeby'].address);
-  let a = await instance.methods.ownerOf(80).call()
-  let b = await instance.methods.ownerOf(81).call()
-  console.log(id, 'owner of 80', a)
-  console.log(id, 'owner of 81', b)
+  let a = await instance.methods.ownerOf(x).call()
+  let b = await instance.methods.ownerOf(x+1).call()
+  console.log(id, 'owner of x', a)
+  console.log(id, 'owner of x+1', b)
 }

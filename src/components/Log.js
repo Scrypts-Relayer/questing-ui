@@ -21,20 +21,25 @@ class Log extends Component {
   }
 
   async componentWillMount(){
-    // await mintToMe(this.props.web3, this.props.account, 70)
-    // await checkOwner(0, this.props.web3)
-    // await transferEscrow(this.props.web3, this.props.account)
-    // await checkOwner(1, this.props.web3)
-    // await createQuest(this.props.web3, this.props.net, this.props.account, '0x7bcD4667086d271070Ae32D92782D1e692a239EA', 70, 1, true, ['0x7bcD4667086d271070Ae32D92782D1e692a239EA'])
-    // await checkOwner(2, this.props.web3)
-    // await completeQuest(this.props.web3, this.props.account, 3, [71])
-    // await checkOwner(3, this.props.web3)
+    let id = 678;
+    // await mintToMe(this.props.web3, this.props.account, id)
+    // await mintToMe(this.props.web3, this.props.account, id+1)
+    // await checkOwner(0, this.props.web3, id)
+    /* await checkOwner(0, this.props.web3, 675) */
+    // await transferEscrow(this.props.web3, this.props.account, id)
+    // await transferEscrow(this.props.web3, this.props.account, id+1)
+    // await checkOwner(1, this.props.web3, id)
+    // await createQuest(this.props.web3, this.props.net, this.props.account, '0x7bcD4667086d271070Ae32D92782D1e692a239EA', id, 1, true, ['0x7bcD4667086d271070Ae32D92782D1e692a239EA'])
+    // await checkOwner(2, this.props.web3, id)
+
+    // await completeQuest(this.props.web3, this.props.account, 5, [id]) // 678
+    // await checkOwner(3, this.props.web3, id)
     let bals = await getBalancesForAll(this.props.net, this.props.account)
-    let questRes = await getQuests(this.props.web3, this.props.net, this.props.account);  
+    let questRes = await getQuests(this.props.web3, this.props.net, this.props.account);
     this.setState({
       quests : questRes,
       balances : bals
-    })
+    }, () => alert('done loading log'))
   }
 
   helpOverlay = () => (
@@ -64,7 +69,7 @@ class Log extends Component {
     )
   }
 
-  toggleOverlay(quest) { 
+  toggleOverlay(quest) {
     this.setState({
       overlay : !this.state.overlay,
       selectedQuest : quest
@@ -86,26 +91,26 @@ class Log extends Component {
   render() {
     return (
       <div className="log">
-        {this.state.overlay ? 
-        <CompleteOverlay 
-          toggleOverlay={this.toggleOverlay} 
+        {this.state.overlay ?
+        <CompleteOverlay
+          toggleOverlay={this.toggleOverlay}
           quest={this.state.selectedQuest}
           balances={this.state.balances}
-          network={this.props.network}  
-          web3 = {this.props.web3}       
-        /> 
+          network={this.props.network}
+          web3 = {this.props.web3}
+        />
         : ''}
         {this.state.showHelp ? this.helpOverlay() : ''}
         <div className="questContainer">
           <div className="questHeader">
             <h3>Quests Available</h3>
-            <p 
-              className="infoText" 
-              id="headerInfoText" 
+            <p
+              className="infoText"
+              id="headerInfoText"
               onMouseEnter={this.showHelp}
               onMouseLeave={this.hideHelp}
             >
-                (What is this?) 
+                (What is this?)
             </p>
           </div>
           <div className="questCardGrid">

@@ -41,6 +41,12 @@ const ERC721s = {
       'address': '0x16baf0de678e52367adc69fd067e5edd1d33e3bf',
       'abi': abi721,
       'imageUrl' : ''
+    },
+    'FAKE': {
+      'name': 'Dev Fake NFT',
+      'address': '0x7bcD4667086d271070Ae32D92782D1e692a239EA'.toLowerCase(),
+      'abi': abi721,
+      'imageUrl' : ''
     }
   }
 }

@@ -43,10 +43,10 @@ export async function getContract(_web3, abi, address) {
 
 
 export async function getBalancesForAll(network, account){
-  let balanceData = {} 
+  let balanceData = {}
   // populate with keys and value []
   for (let key in ERC721s[network]){
-    //use address as key and set balance array to empty 
+    //use address as key and set balance array to empty
     balanceData[ERC721s[network][key].address] = []
   }
   // get all ERC721 assets owned by current account
@@ -63,11 +63,40 @@ export async function getBalancesForAll(network, account){
       balanceData[assetAddres].push(parseInt(assetData.assets[key].token_id));
     }
   }
-  //for testing purposes 
-  balanceData['0x7bcD4667086d271070Ae32D92782D1e692a239EA'.toLowerCase()] = [8]
+
+  //for testing purposes
+  balanceData['0x7bcD4667086d271070Ae32D92782D1e692a239EA'.toLowerCase()] = [675]
+
   return balanceData
 }
 
+export async function getOrder(questId, _web3, network, account){
+  let ans = [];
+  let nextReq;
+  try {
+    let contract = await getContract(_web3, CONTRACT[network].abi, CONTRACT[network].address)
+    let len = await contract.methods.getQuestsReqLength(questId).call({from : account})
+    for (let req=0;req<len;req++) {
+      nextReq = await contract.methods.getReqAddress(questId, req).call({from : account});
+      ans.push(nextReq.toLowerCase());
+    }
+    return ans;
+  } catch (err) {
+    alert('ERROR IN getOrder(): ', err)
+  }
+}
+
+export function addr2Bal(orderedReqs, submittedKey) {
+  console.log('THIS:', orderedReqs)
+  // console.log('THIS:', balances)
+  console.log('THIS:', submittedKey)
+  let ans = []
+  for (let req=0;req<orderedReqs.length;req++) {
+    ans.push(submittedKey[orderedReqs[req]]);
+  }
+  return ans
+  return orderedReqs.map((val) => submittedKey[val])
+}
 
 export async function getImageUrl(address){
 
@@ -121,8 +150,12 @@ export async function getQuests(web3, network, account){
   return allQuests
 }
 
+function handleErr(err, message) {
+  if (err) {alert('ERROR ' + message)} else {alert('SUCCESS ' + message)}
+}
+
 export async function createQuest(
-  web3, 
+  web3,
   network,
   account,
   prizeTokenAddress,
@@ -141,7 +174,7 @@ export async function createQuest(
    ).send({
     from : account
    }, function(err, res){
-    alert('creating the quest!');
+     handleErr(err, 'in creating the quest!')
   });
 }
 
@@ -149,20 +182,28 @@ export async function cancelQuest(account, ourContract, questId) {
   ourContract.methods.cancelQuest(questId).send({
     from : account
    }, function(err, res){
-    alert('Error in cancelling the quest!');
+    handleErr(err, 'in cancelling the quest!')
   });
 }
 
-export async function completeQuest(web3, account, questId, submittedTokenIds) {
-  let ourContract = await getContract(web3, CONTRACT['Rinkeby'].abi, CONTRACT['Rinkeby'].address)
-  ourContract.methods.completeQuest(questId, submittedTokenIds).send({
+export async function completeQuest(web3, network, account, questId, submittedTokenIds) {
+
+  let hi = await getQuests(web3, network, account)
+  console.log('hi', hi)
+
+  console.log('questId', questId)
+  console.log('submittedTokenIds', submittedTokenIds)
+
+  let ourContract = await getContract(web3, CONTRACT[network].abi, CONTRACT[network].address)
+  await ourContract.methods.completeQuest(questId, submittedTokenIds).send({
     from : account
    }, function(err, res){
-    alert('Error in completing the quest!');
+     handleErr(err, 'in completing the quest!')
   });
 }
 
 export async function checkSubmission(web3, reqAddress, bals){
+  alert('loading - awaiting `checkSubmission()` in `questService.js`')
   if(bals.hasOwnProperty(reqAddress.toLowerCase())){
     let balance = bals[reqAddress.toLowerCase()]
     if (balance.length === 0){
@@ -170,16 +211,19 @@ export async function checkSubmission(web3, reqAddress, bals){
     }
     for (let token in bals[reqAddress.toLowerCase()]){
       let nft = bals[reqAddress.toLowerCase()][token]
-      //now check if we are approved 
-      let reqContract = await getContract(web3, fakeNFT['Rinkeby'].abi, reqAddress)
-      console.log(reqContract)
-      let approved = await reqContract.methods.getApproved(nft).call()
-      if (approved === CONTRACT['Rinkeby'].address){
-        return nft
+      try {
+        //now check if we are approved
+        let reqContract = await getContract(web3, fakeNFT['Rinkeby'].abi, reqAddress)
+        console.log(reqContract)
+        let approved = await reqContract.methods.getApproved(nft).call()
+        if (approved === CONTRACT['Rinkeby'].address){
+          return nft
+        }
+      } catch(err) {
+        handleErr(err, 'in checking the approval status of the quest!')
       }
     }
-  } 
+  }
   return false
 }
-
 
