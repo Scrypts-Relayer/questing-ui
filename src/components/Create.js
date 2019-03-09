@@ -5,6 +5,9 @@ import SelectedReqItem from './SelectedReq.js'
 import nfts from '../assets/erc721s.js'
 import erc20s from '../assets/erc20s.js'
 import cat from '../assets/img/ck.png'
+import CreateOverlay from "./CreateOverlay";
+import {createQuest} from '../services/questService'
+
 
 class Create extends Component {
   constructor(props) {
@@ -13,7 +16,7 @@ class Create extends Component {
       step : 2,
       title : '',
       selectedReqs : new Set(),
-      selectedPrize : 'CK',
+      selectedPrize : 'KITTYR',
       titleError : false, 
       reqError : false,
       amtError : false,
@@ -21,25 +24,28 @@ class Create extends Component {
       tokenId : 0,
       nftSelected : true,
       showDropwDown : true,
+      overlay : false
     };
+    console.log(this.props.network)
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this)
     this.togglePage = this.togglePage.bind(this)
     this.completeQuest = this.completeQuest.bind(this)
+    this.toggleOverlay = this.toggleOverlay.bind(this)
   }
 
   async componentWillMount() {
-
+  
   }
 
   populateSelectedReqs(){
     return (
-      Object.keys(nfts.Main).map((key, i) => {
+      Object.keys(nfts[this.props.network]).map((key, i) => {
         if(this.state.selectedReqs.has(key)){
           return(
             <div className="createRow" key={i}>
               <SelectedReqItem 
-                name={nfts.Main[key].name}
+                name={nfts[this.props.network][key].name}
                 remove={this.remove}
                 itemKey = {key}
                 key ={key}
@@ -57,7 +63,7 @@ class Create extends Component {
       selectedPrize : key,
       prizeError : false
     })
-    if(nfts.Main.hasOwnProperty(key)){
+    if(nfts[this.props.network].hasOwnProperty(key)){
       this.setState({
         amount : 1,
         nftSelected : true,
@@ -81,7 +87,7 @@ class Create extends Component {
 
   display721s(){
     return (
-      Object.entries(nfts.Main).map((item)=>{
+      Object.entries(nfts[this.props.network]).map((item)=>{
         return (
           <div 
             className={this.state.selectedPrize === item[0] ? "prizeCard prizeCardSelected" : "prizeCard"} 
@@ -98,7 +104,7 @@ class Create extends Component {
 
   display20s(){
     return (
-      Object.entries(erc20s.Main).map((item)=>{
+      Object.entries(erc20s[this.props.network]).map((item)=>{
         return (
           <div 
             className={this.state.selectedPrize === item[0] ? "prizeCard prizeCardSelected" : "prizeCard"} 
@@ -201,15 +207,35 @@ class Create extends Component {
 
   completeQuest(){
     if(this.validatePageTwo()){
-      alert("Quest created")
+      this.setState({
+        overlay : true
+      })
     }
   }
 
-  toggleOverlay(quest) { 
+  toggleOverlay() { 
     this.setState({
-      overlay : !this.state.overlay,
-      selectedQuest : quest
+      overlay : !this.state.overlay
     })
+  }
+
+  getAddress(){
+    let address;
+    if(this.state.nftSelected){
+      address = nfts[this.props.network][this.state.selectedPrize].address
+    } else {
+      address = erc20s[this.props.network][this.state.selectedPrize].address
+    }
+    return address
+  }
+
+  createQuest(){
+      // await createQuest(
+      //   this.props.web3, 
+      //   this.props.network,
+      //   this.props.account,
+
+      // )
   }
 
   selectPage() {
@@ -239,7 +265,7 @@ class Create extends Component {
             </div>
               {this.populateSelectedReqs()}
             <div className="createRow">
-              {this.state.showDropwDown ? <DropDownList add={this.add} /> : ''}
+              {this.state.showDropwDown ? <DropDownList add={this.add} network={this.props.network}/> : ''}
             </div>
             <hr id="createRule"/>
             <p className="bottomText">Users must submit each item in order to complete the quest.</p>
@@ -255,16 +281,16 @@ class Create extends Component {
     } else {
       return (
         <div className="createPage">
-          <div className='blurred'/>
-          <div className='overLayBox' id="createOverlay">
-            <h2 className="greyText" id="creatCheckHeader">Create Quest</h2>
-            <h3 id="createSubText">You are about to create a quest. Make sure you are the
-              owner of the selected prize or your quest will not be 
-              created. Once you click complete you will be prompted to send your
-              prize into escrow. You can cancel and retrieve your prize from
-              escrow at any time until the quest is completed.
-            </h3>
-          </div>
+          {this.state.overlay ? <CreateOverlay 
+              toggleOverlay={this.toggleOverlay} 
+              network={this.props.network}
+              prizeKey = {this.state.selectedPrize}
+              id = {this.state.tokenId}
+              amount = {this.state.amount}
+              nft = {this.state.nftSelected}
+              address={this.getAddress()}
+
+          /> : ''}
           <div className="headerTextCreate">
             <div className="" onClick={this.togglePage} id="previousButton">
               <h4 className="">{'<- Previous'}</h4>
@@ -276,7 +302,7 @@ class Create extends Component {
             <h6>Insert Prize</h6>
             <p className="bottomText">When you select your prize, it will be hed in escrow while the quest is open.</p>
             {this.displayPrizes()}
-            {erc20s.Main.hasOwnProperty(this.state.selectedPrize) ? 
+            {erc20s[this.props.network].hasOwnProperty(this.state.selectedPrize) ? 
               <div className="amountRow">
                 {this.state.amtError ? <h3 className="errorText" id="amtError">You must enter an amount great than 0.</h3> : ''}
                 <h4 style={{marginRight:"20px"}}>Amount</h4>

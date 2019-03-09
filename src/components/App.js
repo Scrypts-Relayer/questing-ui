@@ -18,7 +18,7 @@ export default class App extends Component {
               <Nav />
               <Route path="/" exact component={withWeb3Ctx(Log)} />
               <Route path="/log" component={withWeb3Ctx(Log)} />
-              <Route path="/create" component={Create} />
+              <Route path="/create" component={withWeb3Ctx(Create)} />
               <Route path="/faq/" component={Faq} />
             </div>
           </Fragment>

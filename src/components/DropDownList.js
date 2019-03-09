@@ -26,7 +26,7 @@ class DropDownList extends Component {
 
   populateOptions() {
     return (
-      Object.entries(nfts.Main).map((key, i)=> {
+      Object.entries(nfts[this.props.network]).map((key, i)=> {
           return(
           <div className="optionRow" onClick={this.handleClick(key[0])} key={i}>
             <div className='thirdOfRow'>

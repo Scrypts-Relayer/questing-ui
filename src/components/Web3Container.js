@@ -73,7 +73,7 @@ class Web3Container extends React.Component {
       hasWeb3: true,
       account: accounts[0],
       web3: web3Instance,
-      net : networkName
+      network : networkName
     });
   };
 
