@@ -44,6 +44,7 @@ export async function getContract(_web3, abi, address) {
 
 export async function getBalancesForAll(network, account){
   let balanceData = {}
+  console.log(network + " is network")
   // populate with keys and value []
   for (let key in ERC721s[network]){
     //use address as key and set balance array to empty
@@ -54,6 +55,7 @@ export async function getBalancesForAll(network, account){
   let res = await fetch(query).catch((err) => {alert('could get balance')})
   let assetData = await res.json()
   // for every token in the list, get user's balance
+  
   let assetSymbol;
   let assetAddres;
   for (let key in assetData.assets) {
@@ -65,7 +67,7 @@ export async function getBalancesForAll(network, account){
   }
 
   //for testing purposes
-  balanceData['0x7bcD4667086d271070Ae32D92782D1e692a239EA'.toLowerCase()] = [675]
+  balanceData['0x7bcD4667086d271070Ae32D92782D1e692a239EA'.toLowerCase()] = [101]
 
   return balanceData
 }
@@ -95,7 +97,7 @@ export function addr2Bal(orderedReqs, submittedKey) {
     ans.push(submittedKey[orderedReqs[req]]);
   }
   return ans
-  return orderedReqs.map((val) => submittedKey[val])
+  // return orderedReqs.map((val) => submittedKey[val])
 }
 
 export async function getImageUrl(address){
@@ -196,14 +198,14 @@ export async function completeQuest(web3, network, account, questId, submittedTo
 
   let ourContract = await getContract(web3, CONTRACT[network].abi, CONTRACT[network].address)
   await ourContract.methods.completeQuest(questId, submittedTokenIds).send({
-    from : account
+    from : '0x76cD09Fd114ce95bf0D81422A0959316FD7F6B1B'
    }, function(err, res){
      handleErr(err, 'in completing the quest!')
   });
 }
 
 export async function checkSubmission(web3, reqAddress, bals){
-  alert('loading - awaiting `checkSubmission()` in `questService.js`')
+  // alert('loading - awaiting `checkSubmission()` in `questService.js`')
   if(bals.hasOwnProperty(reqAddress.toLowerCase())){
     let balance = bals[reqAddress.toLowerCase()]
     if (balance.length === 0){
@@ -214,7 +216,6 @@ export async function checkSubmission(web3, reqAddress, bals){
       try {
         //now check if we are approved
         let reqContract = await getContract(web3, fakeNFT['Rinkeby'].abi, reqAddress)
-        console.log(reqContract)
         let approved = await reqContract.methods.getApproved(nft).call()
         if (approved === CONTRACT['Rinkeby'].address){
           return nft

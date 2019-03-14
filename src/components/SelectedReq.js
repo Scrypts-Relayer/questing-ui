@@ -14,7 +14,7 @@ class SelectedReqItem extends Component {
   }
 
   async componentWillMount() {
-    this.state.selectedReqs.add('ck')
+
   }
 
   handleClick() {

@@ -10,7 +10,7 @@ class CompleteOverlay extends Component {
     super(props);
     this.state = {
       submittedKey :  {},
-      allSubmitted : false
+      allSubmitted : true
     };
   }
 
@@ -21,6 +21,7 @@ class CompleteOverlay extends Component {
    getReqs(){
     return (
       this.props.quest.reqs.map((key, i)=>{
+        key=key.toLowerCase()
         let name = getName(key, this.props.network)
         return(
           <div className="ctRow" key={i}>
@@ -50,12 +51,12 @@ class CompleteOverlay extends Component {
       if(res !== false){
         submittedKey[key] = res
         this.setState({
-          submittedKey
+          submittedKey : submittedKey
         })
       } else {
         submittedKey[key] = false
         this.setState({
-          submittedKey,
+          submittedKey : submittedKey,
           allSubmitted : false
         })
       }
@@ -70,6 +71,16 @@ class CompleteOverlay extends Component {
     })
   }
 
+
+   getReqArrayForCompletion(){
+    let reqs = []
+    this.props.quest.reqs.map((key, i)=>{
+      let id = this.state.submittedKey[key]
+      reqs.push(id)
+    })
+    return reqs
+  }
+
   submitOne = async (addr) => {
     try {
       await checkSubmission(this.props.web3, addr, this.props.balances);
@@ -80,18 +91,19 @@ class CompleteOverlay extends Component {
   }
 
   handleCompleteQuest = async () => {
-    try {
-      alert('BEGIN LOADING: QUEST COMPLETION')
-      let order = await getOrder(this.props.quest.id, this.props.web3, this.props.network, this.props.account)
-      // let ls = addr2Bal(order, this.props.balances, this.state.submittedKey)
-      let ls = addr2Bal(order, this.state.submittedKey)
-      console.log('ls',ls)
-      console.log('ls[0]',ls[0])
-
-      await completeQuest(this.props.web3, this.props.network, this.props.account, this.props.quest.id, ls)
-      alert('END LOADING: completeQuest() FINISHED FROM CompleteOverlay.js > handleCompleteQuest()! ')
-    } catch(err) {
-      alert('ERROR IN handleCompleteQuest(): ', err)
+    if(!this.state.allSubmitted){
+      alert('not submitted all reqs')
+    }else {
+      try {
+        // alert('BEGIN LOADING: QUEST COMPLETION')
+        // let order = await getOrder(this.props.quest.id, this.props.web3, this.props.network, this.props.account)
+        // let ls = addr2Bal(order, this.props.balances, this.state.submittedKey)
+        let ls = this.getReqArrayForCompletion()
+        await completeQuest(this.props.web3, this.props.network, this.props.account, this.props.quest.id, [101])
+        alert('END LOADING: completeQuest() FINISHED FROM CompleteOverlay.js > handleCompleteQuest()! ')
+      } catch(err) {
+        alert('ERROR IN handleCompleteQuest(): ', err)
+      }
     }
   }
 

@@ -3,7 +3,7 @@ import '../App.scss'
 import QuestCard from './QuestCard'
 import CompleteOverlay from './CompleteOverlay'
 import {mintToMe, transferEscrow, checkOwner} from '../services/testing'
-import {getBalancesForAll, getQuests, getImageUrl, createQuest, completeQuest} from '../services/questService'
+import {getBalancesForAll, getQuests, completeQuest} from '../services/questService'
 
 class Log extends Component {
 
@@ -21,25 +21,26 @@ class Log extends Component {
   }
 
   async componentWillMount(){
-    let id = 678;
-    // await mintToMe(this.props.web3, this.props.account, id)
-    // await mintToMe(this.props.web3, this.props.account, id+1)
+    let id = 4007;
+    //await mintToMe(this.props.web3, this.props.account, id)
+    await mintToMe(this.props.web3, this.props.account, id)
     // await checkOwner(0, this.props.web3, id)
     /* await checkOwner(0, this.props.web3, 675) */
-    // await transferEscrow(this.props.web3, this.props.account, id)
-    // await transferEscrow(this.props.web3, this.props.account, id+1)
+    //await transferEscrow(this.props.web3, this.props.account, id)
+    //await transferEscrow(this.props.web3, this.props.account, id)
     // await checkOwner(1, this.props.web3, id)
-    // await createQuest(this.props.web3, this.props.net, this.props.account, '0x7bcD4667086d271070Ae32D92782D1e692a239EA', id, 1, true, ['0x7bcD4667086d271070Ae32D92782D1e692a239EA'])
+    //await createQuest(this.props.web3, this.props.network, this.props.account, '0x7bcD4667086d271070Ae32D92782D1e692a239EA', 3000, 1, true, ['0x7bcD4667086d271070Ae32D92782D1e692a239EA', '0x7bcD4667086d271070Ae32D92782D1e692a239EA'])
     // await checkOwner(2, this.props.web3, id)
 
-    // await completeQuest(this.props.web3, this.props.account, 5, [id]) // 678
+    //await completeQuest(this.props.web3, this.props.network, this.props.account, 4, [675]) // 678
     // await checkOwner(3, this.props.web3, id)
-    let bals = await getBalancesForAll(this.props.net, this.props.account)
-    let questRes = await getQuests(this.props.web3, this.props.net, this.props.account);
+    let bals = await getBalancesForAll(this.props.network, this.props.account)
+    let questRes = await getQuests(this.props.web3, this.props.network, this.props.account);
     this.setState({
       quests : questRes,
       balances : bals
-    }, () => alert('done loading log'))
+    // }, () =>  //alert('done loading log')))
+    })
   }
 
   helpOverlay = () => (

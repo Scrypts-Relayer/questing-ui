@@ -2,7 +2,7 @@ import React, { Component} from "react";
 import '../App.scss'
 import QuestReqItem from './QuestReqItem'
 import ckImage from '../assets/img/ck.png'
-import {getName, getImageUrl} from '../services/questService'
+import {getName} from '../services/questService'
 class QuestCard extends Component {
 
   generateRequirements(){

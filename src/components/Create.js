@@ -6,7 +6,7 @@ import nfts from '../assets/erc721s.js'
 import erc20s from '../assets/erc20s.js'
 import cat from '../assets/img/ck.png'
 import CreateOverlay from "./CreateOverlay";
-import {createQuest} from '../services/questService'
+// import {createQuest} from '../services/questService'
 
 
 class Create extends Component {
@@ -17,6 +17,7 @@ class Create extends Component {
       title : '',
       selectedReqs : new Set(),
       selectedPrize : 'KITTYR',
+      selectedPrizeAddress : '',
       titleError : false, 
       reqError : false,
       amtError : false,
@@ -26,7 +27,6 @@ class Create extends Component {
       showDropwDown : true,
       overlay : false
     };
-    console.log(this.props.network)
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this)
     this.togglePage = this.togglePage.bind(this)
@@ -41,7 +41,7 @@ class Create extends Component {
   populateSelectedReqs(){
     return (
       Object.keys(nfts[this.props.network]).map((key, i) => {
-        if(this.state.selectedReqs.has(key)){
+        if(this.state.selectedReqs.has(nfts[this.props.network][key])){
           return(
             <div className="createRow" key={i}>
               <SelectedReqItem 
@@ -60,18 +60,20 @@ class Create extends Component {
 
   updateSelectedPrize(key){
     this.setState({
-      selectedPrize : key,
       prizeError : false
     })
     if(nfts[this.props.network].hasOwnProperty(key)){
       this.setState({
         amount : 1,
         nftSelected : true,
-        amtError : false
+        amtError : false,
+        selectedPrize : key,
+        selectedPrizeAddress : nfts[this.props.network][key].address,
       })
     } else {
       this.setState({
-        nftSelected : false
+        nftSelected : false,
+        selectedPrize : key,
       })
     }
   }
@@ -126,7 +128,7 @@ class Create extends Component {
       show = false
     }
     const old = this.state.selectedReqs;
-    const newSet = old.add(key)
+    const newSet = old.add(nfts[this.props.network][key])
     this.setState({
       selectedReqs : newSet,
       showDropwDown : show
@@ -140,7 +142,7 @@ class Create extends Component {
       show = true
     }
     const old = this.state.selectedReqs;
-    old.delete(key)
+    old.delete(nfts[this.props.network][key])
     this.setState({
       selectedReqs : old,
       showDropwDown : show
@@ -210,6 +212,7 @@ class Create extends Component {
       this.setState({
         overlay : true
       })
+
     }
   }
 
@@ -227,15 +230,6 @@ class Create extends Component {
       address = erc20s[this.props.network][this.state.selectedPrize].address
     }
     return address
-  }
-
-  createQuest(){
-      // await createQuest(
-      //   this.props.web3, 
-      //   this.props.network,
-      //   this.props.account,
-
-      // )
   }
 
   selectPage() {
@@ -281,16 +275,20 @@ class Create extends Component {
     } else {
       return (
         <div className="createPage">
-          {this.state.overlay ? <CreateOverlay 
-              toggleOverlay={this.toggleOverlay} 
-              network={this.props.network}
-              prizeKey = {this.state.selectedPrize}
-              id = {this.state.tokenId}
-              amount = {this.state.amount}
-              nft = {this.state.nftSelected}
-              address={this.getAddress()}
-
-          /> : ''}
+          {this.state.overlay ? 
+              <CreateOverlay 
+                network={this.props.network}
+                web3={this.props.web3}
+                account={this.props.account}
+                toggleOverlay={this.toggleOverlay} 
+                prizeKey = {this.state.selectedPrize}
+                id = {this.state.tokenId}
+                amount = {this.state.amount}
+                nft = {this.state.nftSelected}
+                address={this.getAddress()}
+                reqs={this.state.selectedReqs}
+              /> 
+              : ''}
           <div className="headerTextCreate">
             <div className="" onClick={this.togglePage} id="previousButton">
               <h4 className="">{'<- Previous'}</h4>

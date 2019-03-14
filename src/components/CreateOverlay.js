@@ -1,10 +1,6 @@
 import React, { Component} from "react";
 import '../App.scss'
-import down from '../assets/img/caret-down.png'
-import up from '../assets/img/caret-arrow-up.png'
-import cat from '../assets/img/ck.png'
-import nfts from '../assets/erc721s.js'
-import erc20s from '../assets/erc20s'
+import {createQuest} from '../services/questService'
 
 class CreateOverlay extends Component {
   constructor(props) {
@@ -12,6 +8,29 @@ class CreateOverlay extends Component {
     this.state = {
 
     };
+  }
+
+  async componentWillMount(){
+    this.create()
+  }
+
+
+  async create(){
+    console.log(this.props.reqs)
+    try{
+      // await createQuest(
+      //   this.props.web3, 
+      //   this.props.network,
+      //   this.props.account,
+      //   this.props.address,
+      //   this.props.id,
+      //   this.props.amount,
+      //   this.props.nft,
+      //   reqs
+      // )
+    }catch (e){
+      console.log(e)
+    }
   }
 
   render() {
@@ -32,7 +51,7 @@ class CreateOverlay extends Component {
               <h3>Token Amount : {this.props.amount}</h3>}
             </div>
             <div className="createButtonGroup">
-              <div className="createButtonOverlay whiteText">
+              <div className="createButtonOverlay whiteText" >
                 Create
               </div>
               <div className="cancelButtonOverlay whiteText" onClick={this.props.toggleOverlay}>

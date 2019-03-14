@@ -12,14 +12,13 @@ export async function getFake(web3){
 
 export async function mintToMe(web3, account, x){
     let instance =  await new web3.eth.Contract(fakeNFT['Rinkeby'].abi, fakeNFT['Rinkeby'].address);
-    console.log(instance)
-  // console.log(account)
-
+    //console.log(instance)
+    //console.log(account)
     await instance.methods.mint(account, x).send({from: account})
     // await instance.methods.mint(account, x+1).send({from: account})
-    //let balance = await instance.methods.getApproved(43).call()
-    //console.log(balance)
-    console.log('done', x)
+    // let balance = await instance.methods.ownerOf(101).call()
+    // console.log(balance)
+    // console.log('done', x)
     // thex = x
     // await instance.methods.mint(account, x).send({from: account})
     // await instance.methods.mint(account, x+1).send({from: account})
