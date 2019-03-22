@@ -1,6 +1,6 @@
 import React, { Component} from "react";
 import '../App.scss'
-import {createQuest} from '../services/questService'
+import {createQuest, transferEscrow} from '../services/questService'
 
 class CreateOverlay extends Component {
   constructor(props) {
@@ -8,26 +8,48 @@ class CreateOverlay extends Component {
     this.state = {
 
     };
+    this.create = this.create.bind(this)
+    this.generateReqsList = this.generateReqsList.bind(this)
   }
 
   async componentWillMount(){
-    this.create()
+
+
+  }
+
+  generateReqsList(){
+    let reqs = []
+    for (let item of this.props.reqs){
+      reqs.push(item.address)
+    }
+   return reqs
   }
 
 
   async create(){
-    console.log(this.props.reqs)
+    console.log('hey')
+    let reqs = this.generateReqsList()
+    console.log(reqs)
+    try {
+      await transferEscrow(
+        this.props.web3, 
+        this.props.network, 
+        this.props.account,
+        this.props.id
+        )
+    } catch(e){
+    }
     try{
-      // await createQuest(
-      //   this.props.web3, 
-      //   this.props.network,
-      //   this.props.account,
-      //   this.props.address,
-      //   this.props.id,
-      //   this.props.amount,
-      //   this.props.nft,
-      //   reqs
-      // )
+      await createQuest(
+        this.props.web3, 
+        this.props.network,
+        this.props.account,
+        this.props.address,
+        this.props.id,
+        this.props.amount,
+        this.props.nft,
+        reqs
+      )
     }catch (e){
       console.log(e)
     }
@@ -51,8 +73,8 @@ class CreateOverlay extends Component {
               <h3>Token Amount : {this.props.amount}</h3>}
             </div>
             <div className="createButtonGroup">
-              <div className="createButtonOverlay whiteText" >
-                Create
+              <div className="createButtonOverlay whiteText" onClick={this.create}>
+                Send Prize To Escrow
               </div>
               <div className="cancelButtonOverlay whiteText" onClick={this.props.toggleOverlay}>
                 Cancel

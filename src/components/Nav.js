@@ -10,6 +10,9 @@ const Nav = props => (
         </NavLink>
       </div>
       <div id="navRight">
+        <NavLink to="/landing" activeClassName="navSelected">
+          <h2 className="whiteText">Home</h2>
+        </NavLink >
         <NavLink to="/log" activeClassName="navSelected">
           <h2 className="whiteText">Quest Log</h2>
         </NavLink >

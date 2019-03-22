@@ -1,5 +1,7 @@
 $purple : #7231FC;
-$nav-height: 100px;
+$black : #202020;
+$light-grey : rgb(179, 179, 179);
+$nav-height: 80px;
 $main-font : 'Ubuntu', sans-serif;
 
 //------------GLOBAL--------------/
@@ -71,7 +73,7 @@ html, body{
 }
 
 .App {
-  min-height: calc(100vh-$nav-height);
+  min-height: 100vh;
   background-color:  white;
 }
 
@@ -110,8 +112,174 @@ html, body{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 260px;
+  width: 360px;
 }
+
+//---------Landing Page -----------//
+.landing{
+  margin-top: $nav-height;
+  width: 100%;
+  // background-color: red;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero{
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  padding: 80px 0;
+}
+
+.landingLeft{
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.landingRight{
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  height: auto;
+}
+
+.landingRight > *{
+  width: 220px;
+  height: 340px;
+  margin-left: 60px;
+}
+
+.landingHeader  {
+  color: $black;
+  font-size: 34px;
+}
+
+#signup{
+  background-color: $purple;
+  margin-right: 40px;
+}
+
+#learn{
+  background-color: #585858;
+}
+
+.buttonGroup{
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 60px;
+}
+
+.landingButton{
+  width: 200px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  color: white;
+  font-weight: 040;
+}
+
+.landingContent{
+  min-height: 340px;
+  padding: 60px 10%;
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  background-color: #F7FAFF;
+}
+
+.landingContent > .left {
+  width: 45%;
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0px;
+}
+
+.landingContent > .left > img {
+  width: 300px;
+}
+
+.landingContent > .left > p {
+  width: 340px;
+  text-align: center;
+}
+
+
+.landingContent > .right{
+  width: 50%;
+  margin-left: 5%;
+  margin-top: 20px;
+}
+
+.landingContent > .right > h1{
+  color: $purple;
+}
+
+.subHeadingReg{
+  font-size: 22px;
+  margin-top: 40px;
+}
+
+.subHeadingBold{
+  font-size: 22px;
+  margin-top: 40px;
+  font-weight: 600;
+}
+
+.signupSection{
+  padding: 60px 0;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.signupBold{
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.signupRow{
+  display: flex;
+  flex-direction: row;
+  margin-top: 40px;
+}
+
+.signupRow > input{
+  width: 340px;
+  font-size: 20px;
+  height: 40px;
+  border: 1px solid $light-grey;
+  border-radius: 8px;
+  padding-left: 20px;
+}
+
+.signupRow > div {
+  background-color: $purple;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-block-end: 3px;
+  margin-left: 20px;
+}
+
+
+
+
 
 //------------------QUEST LOG PAGE ----------------------
 
@@ -121,6 +289,15 @@ html, body{
   flex-direction: row;
   justify-content: center;
   margin-top: $nav-height;
+}
+
+.loadingBox{
+  position: absolute;
+  top: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .questCardGrid{
@@ -280,7 +457,7 @@ html, body{
 
 .CompleteOverlay{
   position: absolute;
-  height: 100vh;
+  height: 100%;
   width: 100vw;
   z-index: 99;
   display: flex;
@@ -301,7 +478,7 @@ html, body{
 .blurred{
   position: absolute;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   background-color: rgb(11, 11, 23);
   opacity: 0.6;
   cursor: pointer;
@@ -807,7 +984,43 @@ html, body{
   margin-bottom: 30px;
 }
 
-///-------------------------rsponsive 
+//----------Footer ------------/@at-root
+
+.footer{
+  position: relative;
+  bottom: 0;
+  height: 200px;
+  background-color: $black;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.partners{
+  width: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.siteMap{
+  width: 400px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 160px;
+}
+
+.footlogo{
+  height: 40px;
+}
+
+
+///-------------------------responsive 
 
 ///breakpoints
 @media only screen and (max-width: 1200px) {

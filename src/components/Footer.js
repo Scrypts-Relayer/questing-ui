@@ -1,9 +1,22 @@
 import React from 'react';
+import zerox from '../assets/img/0x.png'
+import open from '../assets/img/opensea.png'
 
 const Footer = () => {
   return (
-    <div className='Footer'>
-      <small>Created by <a href='kennyp.herokuapp.com' target='_blank'>Kenny Peluso</a> and Ian Lapham using <a href='https://reactjs.org/'>React</a>, <a href='https://reactstrap.github.io/'>reactstrap</a>, and some elbow grease.</small>
+    <div className='footer'>
+      <div className="partners">
+        <h2 className="whiteText">Powered By</h2>
+        <img src={zerox} alt={''} className="footlogo" />
+        <img src={open} alt={''} className="footlogo" />
+      </div>
+      <div className="siteMap">
+        <h2 className="whiteText">About</h2>
+        <h2 className="whiteText">FAQ</h2>
+        <h2 className="whiteText">Medium</h2>
+        <h2 className="whiteText">Discord</h2>
+        <h2 className="whiteText">Github</h2>
+      </div>
     </div>
   );
 };

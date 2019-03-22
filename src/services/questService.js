@@ -26,7 +26,6 @@ export async function setApprovalFor20(_web3, network, address, id, account) {
   try {
     let token_contract = await getContract(_web3, abi20, address)
     await token_contract.methods.approve(CONTRACT[network].address, id).call({from : account})
-    console.log(`Successful approval for token id ${id}!`);
   } catch (err) {
     console.log(err);
   }
@@ -67,25 +66,9 @@ export async function getBalancesForAll(network, account){
   }
 
   //for testing purposes
-  balanceData['0x7bcD4667086d271070Ae32D92782D1e692a239EA'.toLowerCase()] = [101]
+  balanceData['0x7bcD4667086d271070Ae32D92782D1e692a239EA'.toLowerCase()] = [280]
 
   return balanceData
-}
-
-export async function getOrder(questId, _web3, network, account){
-  let ans = [];
-  let nextReq;
-  try {
-    let contract = await getContract(_web3, CONTRACT[network].abi, CONTRACT[network].address)
-    let len = await contract.methods.getQuestsReqLength(questId).call({from : account})
-    for (let req=0;req<len;req++) {
-      nextReq = await contract.methods.getReqAddress(questId, req).call({from : account});
-      ans.push(nextReq.toLowerCase());
-    }
-    return ans;
-  } catch (err) {
-    alert('ERROR IN getOrder(): ', err)
-  }
 }
 
 export function addr2Bal(orderedReqs, submittedKey) {
@@ -153,7 +136,7 @@ export async function getQuests(web3, network, account){
 }
 
 function handleErr(err, message) {
-  if (err) {alert('ERROR ' + message)} else {alert('SUCCESS ' + message)}
+  if (err) {console.log('ERROR ' + message)} else {console.log('SUCCESS ' + message)}
 }
 
 export async function createQuest(
@@ -167,8 +150,9 @@ export async function createQuest(
   requirementsList) {
     let ourContract = await getContract(web3, CONTRACT[network].abi,CONTRACT[network].address)
     console.log(ourContract)
+    console.log(requirementsList)
     ourContract.methods.createQuest(
-    prizeTokenAddress,
+    prizeTokenAddress.toString(),
     prizeTokenId,
     prizeTokenAmount,
     prizeIsNFT,
@@ -188,17 +172,17 @@ export async function cancelQuest(account, ourContract, questId) {
   });
 }
 
+export async function transferEscrow(web3, network, account, tokenId){
+  let instance =  await new web3.eth.Contract(fakeNFT[network].abi, fakeNFT[network].address);
+  await instance.methods.approve(CONTRACT[network].address, tokenId).send({from : account})
+}
+
 export async function completeQuest(web3, network, account, questId, submittedTokenIds) {
-
-  let hi = await getQuests(web3, network, account)
-  console.log('hi', hi)
-
-  console.log('questId', questId)
-  console.log('submittedTokenIds', submittedTokenIds)
-
   let ourContract = await getContract(web3, CONTRACT[network].abi, CONTRACT[network].address)
+  console.log(ourContract)
+  console.log(account)
   await ourContract.methods.completeQuest(questId, submittedTokenIds).send({
-    from : '0x76cD09Fd114ce95bf0D81422A0959316FD7F6B1B'
+    from : account
    }, function(err, res){
      handleErr(err, 'in completing the quest!')
   });

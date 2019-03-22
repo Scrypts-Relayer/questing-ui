@@ -37,8 +37,8 @@ class CompleteOverlay extends Component {
       })
     )
   }
-
-  async checkIfSubmitted(){ // during componentDidMount, called once
+  // during componentDidMount, called once
+  async checkIfSubmitted(){ 
     let submittedKey = {}
     this.props.quest.reqs.map(async (key, i)=>{
       let res;
@@ -73,12 +73,12 @@ class CompleteOverlay extends Component {
 
 
    getReqArrayForCompletion(){
-    let reqs = []
+    let reqArray = []
     this.props.quest.reqs.map((key, i)=>{
-      let id = this.state.submittedKey[key]
-      reqs.push(id)
+      let id = this.state.submittedKey[key.toLowerCase()]
+      reqArray.push(id)
     })
-    return reqs
+    return reqArray
   }
 
   submitOne = async (addr) => {
@@ -86,7 +86,7 @@ class CompleteOverlay extends Component {
       await checkSubmission(this.props.web3, addr, this.props.balances);
       this.checkIfSubmittedAfterLoad();
     } catch(err) {
-      alert('ERROR IN submitOne(): ', err)
+      // alert('ERROR IN submitOne(): ', err)
     }
   }
 
@@ -95,14 +95,15 @@ class CompleteOverlay extends Component {
       alert('not submitted all reqs')
     }else {
       try {
-        // alert('BEGIN LOADING: QUEST COMPLETION')
+        console.log('attempting to complete test')
         // let order = await getOrder(this.props.quest.id, this.props.web3, this.props.network, this.props.account)
         // let ls = addr2Bal(order, this.props.balances, this.state.submittedKey)
         let ls = this.getReqArrayForCompletion()
-        await completeQuest(this.props.web3, this.props.network, this.props.account, this.props.quest.id, [101])
-        alert('END LOADING: completeQuest() FINISHED FROM CompleteOverlay.js > handleCompleteQuest()! ')
+        console.log(this.props.account)
+        await completeQuest(this.props.web3, this.props.network, this.props.account, this.props.quest.id, ls)
+       // alert('END LOADING: completeQuest() FINISHED FROM CompleteOverlay.js > handleCompleteQuest()! ')
       } catch(err) {
-        alert('ERROR IN handleCompleteQuest(): ', err)
+        
       }
     }
   }

@@ -2,8 +2,10 @@ import React, { Component} from "react";
 import '../App.scss'
 import QuestCard from './QuestCard'
 import CompleteOverlay from './CompleteOverlay'
-import {mintToMe, transferEscrow, checkOwner} from '../services/testing'
+import {mintToMe, transferEscrow, checkOwne, checkApproval, checkOwner} from '../services/testing'
 import {getBalancesForAll, getQuests, completeQuest} from '../services/questService'
+import ReactLoading from 'react-loading';
+
 
 class Log extends Component {
 
@@ -13,7 +15,8 @@ class Log extends Component {
       overlay : false,
       selectedQuest : null,
       quests : [],
-      showHelp : false
+      showHelp : false,
+      loadingQuest : true
     };
     this.toggleOverlay = this.toggleOverlay.bind(this)
     this.hideHelp = this.hideHelp.bind(this)
@@ -21,25 +24,18 @@ class Log extends Component {
   }
 
   async componentWillMount(){
-    let id = 4007;
+    let id = 280;
+    // await checkApproval(this.props.web3, this.props.account, id)
+    // await checkOwner(this.props.web3, id)
     //await mintToMe(this.props.web3, this.props.account, id)
-    await mintToMe(this.props.web3, this.props.account, id)
-    // await checkOwner(0, this.props.web3, id)
-    /* await checkOwner(0, this.props.web3, 675) */
     //await transferEscrow(this.props.web3, this.props.account, id)
-    //await transferEscrow(this.props.web3, this.props.account, id)
-    // await checkOwner(1, this.props.web3, id)
-    //await createQuest(this.props.web3, this.props.network, this.props.account, '0x7bcD4667086d271070Ae32D92782D1e692a239EA', 3000, 1, true, ['0x7bcD4667086d271070Ae32D92782D1e692a239EA', '0x7bcD4667086d271070Ae32D92782D1e692a239EA'])
-    // await checkOwner(2, this.props.web3, id)
-
     //await completeQuest(this.props.web3, this.props.network, this.props.account, 4, [675]) // 678
-    // await checkOwner(3, this.props.web3, id)
     let bals = await getBalancesForAll(this.props.network, this.props.account)
     let questRes = await getQuests(this.props.web3, this.props.network, this.props.account);
     this.setState({
       quests : questRes,
-      balances : bals
-    // }, () =>  //alert('done loading log')))
+      balances : bals,
+      loadingQuest : false
     })
   }
 
@@ -89,6 +85,8 @@ class Log extends Component {
     })
   }
 
+  
+
   render() {
     return (
       <div className="log">
@@ -99,12 +97,19 @@ class Log extends Component {
           balances={this.state.balances}
           network={this.props.network}
           web3 = {this.props.web3}
+          account={this.props.account}
         />
         : ''}
         {this.state.showHelp ? this.helpOverlay() : ''}
         <div className="questContainer">
-          <div className="questHeader">
-            <h3>Quests Available</h3>
+          {this.state.loadingQuest ? 
+          <div className="loadingBox">
+            <h6>Loading Quests</h6>
+            <ReactLoading type={'bubbles'} color={'#7231FC'} height={467} width={175} /> 
+          </div>
+          : ''}
+          {this.state.loadingQuest ? '' : <div className="questHeader">
+            <h3>Quests Available</h3>  
             <p
               className="infoText"
               id="headerInfoText"
@@ -113,7 +118,7 @@ class Log extends Component {
             >
                 (What is this?)
             </p>
-          </div>
+          </div>}
           <div className="questCardGrid">
             {this.getQuestData()}
           </div>
