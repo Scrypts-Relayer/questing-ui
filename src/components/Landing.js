@@ -2,6 +2,8 @@ import React from 'react';
 import card1 from '../assets/img/card1.png'
 import card2 from '../assets/img/card2.png'
 import prizeGroup from '../assets/img/prizeGroup.png'
+import ReactTypingEffect from 'react-typing-effect';
+
 
 const Landing = (props) => {
   return (
@@ -16,6 +18,14 @@ const Landing = (props) => {
             <div className="landingButton" id="learn">
               Learn More
             </div>
+          </div>
+          <div className="shuffleText">
+          Get rewarded for <span className="spacing"/>
+          <ReactTypingEffect
+            text={["Voting on DAOs.", "Collecting a Crypto Kitty.", "Contributing to open source."]} 
+            speed={100}
+            eraseDelay={2000}
+          />
           </div>
         </div>
         <div className="landingRight">

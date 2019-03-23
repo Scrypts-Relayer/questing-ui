@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { getProvider } from "../services/web3Service";
 import { Web3Ctx } from "../contexts/Web3Context";
+import signin from '../assets/img/signin.png'
 
 class Web3Container extends React.Component {
   state = {
@@ -81,19 +82,16 @@ class Web3Container extends React.Component {
     if (this.state.isLoading) {
       return null;
     }
-    if (window.location.pathname === '/'){
-      return (
-        <Web3Ctx.Provider value={this.state}>
-          {this.props.children}
-        </Web3Ctx.Provider>
-      );
-    }
     if (!this.state.hasWeb3 || !this.state.loggedIn) {
-      return (
-        <p className="web3warning">
-          {getText(this.state.hasWeb3, this.state.loggedIn)}
-        </p>
-      );
+      if(window.location.pathname!='/' && window.location.pathname!='/faq'){
+        return (
+          <div className="web3warning">
+            <img src={signin} alt={''} />
+            <p className="warningTop">No connection to Ethereum.</p>
+            <p className="warningBottom">{getText(this.state.hasWeb3, this.state.loggedIn)}</p>
+          </div>
+        );
+      }
     }
     return (
       <Web3Ctx.Provider value={this.state}>

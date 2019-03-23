@@ -87,6 +87,27 @@ html, body{
   background-color: red;
 }
 
+//--------- ERROR PAGE ----------
+
+.web3warning{
+  padding-top: 300px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.web3warning > img {
+  width: 60px;
+  margin-bottom: 40px;
+}
+
+.warningTop{
+  font-weight: 500;
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
 //---------------NAV-----------------------
 
 .nav {
@@ -104,9 +125,6 @@ html, body{
   z-index: 100;
 }
 
-.web3warning{
-  padding-top: 300px;
-}
 
 .navSelected{
   position: relative;
@@ -166,6 +184,20 @@ html, body{
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.shuffleText{
+  width: 100%;
+  margin-top: 60px;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.spacing{
+  width: 6px;
 }
 
 .landingRight{
@@ -1096,6 +1128,14 @@ html, body{
 
   .landing {
     min-width: 1300px;
+  }
+
+  .nav{
+    min-width: 500px;
+  }
+
+  .faq{
+    min-width: 1200px;
   }
 
   .App{
