@@ -18,8 +18,8 @@ export default class App extends Component {
           <Fragment>
             <div className="App">
               <Nav />
-              <Route path="/landing" exact component={withWeb3Ctx(Landing)} />
-              <Route path="/log" component={withWeb3Ctx(Log)} />
+              <Route path="/" exact component={withWeb3Ctx(Landing)} />
+              <Route path="/log" exact component={withWeb3Ctx(Log)} />
               <Route path="/create" component={withWeb3Ctx(Create)} />
               <Route path="/faq/" component={Faq} />
             </div>

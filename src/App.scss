@@ -104,15 +104,41 @@ html, body{
   z-index: 100;
 }
 
-.navSelected{
-  border-bottom: 2px solid white;
+.web3warning{
+  padding-top: 300px;
 }
+
+.navSelected{
+  position: relative;
+}
+
+
+.navUnderline{
+  width: 26px;
+  height: 2px;
+  position: absolute;
+  bottom: -10px;
+  background-color: white;
+}
+
+#u1{
+  left: 25px;
+}
+
+#u2{
+  left: 13px;
+}
+
+#u3{
+  left: 2px;
+}
+
 
 #navRight {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 360px;
+  width: 260px;
 }
 
 //---------Landing Page -----------//
@@ -984,6 +1010,41 @@ html, body{
   margin-bottom: 30px;
 }
 
+
+//---------------- faq
+
+.faq{
+  margin-top: $nav-height;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  padding-top: 60px;
+}
+
+
+.faq > h1 {
+  color: $purple;
+  align-self: center;
+  margin-bottom: 60px;
+}
+
+.faq > p {
+  width: 80%;
+  padding-left: 20%;
+}
+
+.faqHeader{
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.faqSub{
+  font-size: 18px;
+  margin-bottom: 40px;
+}
+
 //----------Footer ------------/@at-root
 
 .footer{
@@ -1028,7 +1089,12 @@ html, body{
     min-width: 800px;
   }
 
+
   .log {
+    min-width: 1300px;
+  }
+
+  .landing {
     min-width: 1300px;
   }
 
@@ -1043,7 +1109,5 @@ html, body{
   .createPage{
     width: 1300px;
   }
-
-  
 
 }

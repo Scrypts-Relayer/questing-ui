@@ -79,12 +79,18 @@ class Web3Container extends React.Component {
 
   render = () => {
     if (this.state.isLoading) {
-      // Can do a nice loading here
       return null;
+    }
+    if (window.location.pathname === '/'){
+      return (
+        <Web3Ctx.Provider value={this.state}>
+          {this.props.children}
+        </Web3Ctx.Provider>
+      );
     }
     if (!this.state.hasWeb3 || !this.state.loggedIn) {
       return (
-        <p>
+        <p className="web3warning">
           {getText(this.state.hasWeb3, this.state.loggedIn)}
         </p>
       );
