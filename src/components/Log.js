@@ -2,8 +2,7 @@ import React, { Component} from "react";
 import '../App.scss'
 import QuestCard from './QuestCard'
 import CompleteOverlay from './CompleteOverlay'
-import {mintToMe, transferEscrow, checkOwne, checkApproval, checkOwner} from '../services/testing'
-import {getBalancesForAll, getQuests, completeQuest} from '../services/questService'
+//import {mintToMe, transferEscrow, checkOwne, checkApproval, checkOwner} from '../services/testing'
 import ReactLoading from 'react-loading';
 
 
@@ -14,9 +13,7 @@ class Log extends Component {
     this.state = {
       overlay : false,
       selectedQuest : null,
-      quests : [],
       showHelp : false,
-      loadingQuest : true
     };
     this.toggleOverlay = this.toggleOverlay.bind(this)
     this.hideHelp = this.hideHelp.bind(this)
@@ -30,13 +27,9 @@ class Log extends Component {
     //await mintToMe(this.props.web3, this.props.account, id)
     //await transferEscrow(this.props.web3, this.props.account, id)
     //await completeQuest(this.props.web3, this.props.network, this.props.account, 4, [675]) // 678
-    let bals = await getBalancesForAll(this.props.network, this.props.account)
-    let questRes = await getQuests(this.props.web3, this.props.network, this.props.account);
-    this.setState({
-      quests : questRes,
-      balances : bals,
-      loadingQuest : false
-    })
+    //let bals = await getBalancesForAll(this.props.network, this.props.account)
+    //let questRes = await getQuests(this.props.web3, this.props.network, this.props.account);
+
   }
 
   helpOverlay = () => (
@@ -47,7 +40,7 @@ class Log extends Component {
 
   getQuestData() {
     return (
-      this.state.quests.map((item, i)=>{
+      this.props.quests.map((item, i)=>{
         return (
           <QuestCard
               reqKeys = {item.reqs}
@@ -55,7 +48,7 @@ class Log extends Component {
               prizeAddress={item.prizeAddress}
               id={item.id}
               network ={this.props.network}
-              balances = {this.state.balances}
+              balances = {this.props.bals}
               key={i}
               prizeName={item.prizeName}
               quest = {item}
@@ -85,8 +78,6 @@ class Log extends Component {
     })
   }
 
-  
-
   render() {
     return (
       <div className="log">
@@ -94,7 +85,7 @@ class Log extends Component {
         <CompleteOverlay
           toggleOverlay={this.toggleOverlay}
           quest={this.state.selectedQuest}
-          balances={this.state.balances}
+          balances={this.props.bals}
           network={this.props.network}
           web3 = {this.props.web3}
           account={this.props.account}
@@ -102,13 +93,13 @@ class Log extends Component {
         : ''}
         {this.state.showHelp ? this.helpOverlay() : ''}
         <div className="questContainer">
-          {this.state.loadingQuest ? 
+          {this.props.isLoading === null  ? 
           <div className="loadingBox">
             <h6>Loading Quests</h6>
             <ReactLoading type={'bubbles'} color={'#7231FC'} height={467} width={175} /> 
           </div>
           : ''}
-          {this.state.loadingQuest ? '' : <div className="questHeader">
+          {this.props.isLoading === null ? '' : <div className="questHeader">
             <h3>Quests Available</h3>  
             <p
               className="infoText"

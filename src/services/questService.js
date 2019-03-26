@@ -43,7 +43,6 @@ export async function getContract(_web3, abi, address) {
 
 export async function getBalancesForAll(network, account){
   let balanceData = {}
-  console.log(network + " is network")
   // populate with keys and value []
   for (let key in ERC721s[network]){
     //use address as key and set balance array to empty

@@ -3,22 +3,31 @@ import PropTypes from "prop-types";
 import { getProvider } from "../services/web3Service";
 import { Web3Ctx } from "../contexts/Web3Context";
 import signin from '../assets/img/signin.png'
+import {getBalancesForAll, getQuests, completeQuest} from '../services/questService'
 
 class Web3Container extends React.Component {
   state = {
-    isLoading: false,
+    isLoading: null,
     web3: null,
     provider: "",
     account: "",
     loggedIn: false,
     hasWeb3: false,
-    network : 'Rinkeby'
+    network : 'Rinkeby',
+    quests : [],
+    bals : []
   };
 
   async componentWillMount() {
     await this.checkAccounStatus();
     await this.subscribeToAccountChange(this.checkAccounStatus);
-    this.setState({ isLoading: false });
+    let bals = await getBalancesForAll(this.state.network, this.state.account)
+    let questRes = await getQuests(this.state.web3, this.state.network, this.state.account);
+    this.setState({ 
+      isLoading: false,
+      quests : questRes,
+      bals : bals
+    });
   };
 
   subscribeToAccountChange = async onAccountChangeFunc => {
