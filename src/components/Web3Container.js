@@ -83,7 +83,7 @@ class Web3Container extends React.Component {
       return null;
     }
     if (!this.state.hasWeb3 || !this.state.loggedIn) {
-      if(window.location.pathname!='/' && window.location.pathname!='/faq'){
+      if(window.location.pathname!=='/' && window.location.pathname!=='/faq'){
         return (
           <div className="web3warning">
             <img src={signin} alt={''} />

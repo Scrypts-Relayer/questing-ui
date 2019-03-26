@@ -24,9 +24,9 @@ class Log extends Component {
   }
 
   async componentWillMount(){
-    let id = 280;
+    let id = 780;
     // await checkApproval(this.props.web3, this.props.account, id)
-    // await checkOwner(this.props.web3, id)
+    //await checkOwner(this.props.web3, id)
     //await mintToMe(this.props.web3, this.props.account, id)
     //await transferEscrow(this.props.web3, this.props.account, id)
     //await completeQuest(this.props.web3, this.props.network, this.props.account, 4, [675]) // 678

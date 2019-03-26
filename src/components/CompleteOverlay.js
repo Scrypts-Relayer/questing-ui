@@ -2,7 +2,8 @@ import React, { Component} from "react";
 import '../App.scss'
 import icon from '../assets/img/ck.png'
 import closeIcon from '../assets/img/letter-x.png'
-import {getName, checkSubmission, completeQuest, getOrder, addr2Bal} from '../services/questService'
+import { Modal } from 'rimble-ui'
+import {getName, checkSubmission, completeQuest} from '../services/questService'
 
 class CompleteOverlay extends Component {
 
@@ -92,16 +93,11 @@ class CompleteOverlay extends Component {
 
   handleCompleteQuest = async () => {
     if(!this.state.allSubmitted){
-      alert('not submitted all reqs')
+      
     }else {
       try {
-        console.log('attempting to complete test')
-        // let order = await getOrder(this.props.quest.id, this.props.web3, this.props.network, this.props.account)
-        // let ls = addr2Bal(order, this.props.balances, this.state.submittedKey)
         let ls = this.getReqArrayForCompletion()
-        console.log(this.props.account)
         await completeQuest(this.props.web3, this.props.network, this.props.account, this.props.quest.id, ls)
-       // alert('END LOADING: completeQuest() FINISHED FROM CompleteOverlay.js > handleCompleteQuest()! ')
       } catch(err) {
         
       }

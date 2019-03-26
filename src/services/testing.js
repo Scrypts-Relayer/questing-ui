@@ -1,8 +1,5 @@
 import fakeNFT from '../assets/fakeNFT'
-import erc721abi from '../assets/erc721_abi'
 import CONTRACT from '../assets/contract'
-import { INSPECT_MAX_BYTES } from 'buffer';
-
 
 export async function checkApproval(web3, account, x){
   let instance =  await new web3.eth.Contract(fakeNFT['Rinkeby'].abi, fakeNFT['Rinkeby'].address);

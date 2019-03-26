@@ -47,7 +47,7 @@ const Landing = (props) => {
       <div className="signupSection">
         <p className="signupBold greyText">Sign Up for early access.</p>
         <div className="signupRow">
-          <input placeholder="Natasha" />
+          <input placeholder="Email" />
           <div className="landingButton">
             Sign Up
           </div>

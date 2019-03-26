@@ -6,14 +6,13 @@ import nfts from '../assets/erc721s.js'
 import erc20s from '../assets/erc20s.js'
 import cat from '../assets/img/ck.png'
 import CreateOverlay from "./CreateOverlay";
-// import {createQuest} from '../services/questService'
-
+import { ToastMessage, Button } from 'rimble-ui'
 
 class Create extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      step : 2,
+      step : 2  ,
       title : '',
       selectedReqs : new Set(),
       selectedPrize : 'KITTYR',
@@ -204,7 +203,6 @@ class Create extends Component {
           step : 1
         })
       }
-    
   }
 
   completeQuest(){
@@ -275,6 +273,7 @@ class Create extends Component {
     } else {
       return (
         <div className="createPage">
+        <ToastMessage.Provider ref={node => window.toastProvider = node} />
           {this.state.overlay ? 
               <CreateOverlay 
                 network={this.props.network}

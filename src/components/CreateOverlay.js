@@ -1,21 +1,18 @@
 import React, { Component} from "react";
 import '../App.scss'
 import {createQuest, transferEscrow} from '../services/questService'
+import { ToastMessage, Button } from 'rimble-ui'
 
 class CreateOverlay extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      loadToEscrow : false
     };
     this.create = this.create.bind(this)
     this.generateReqsList = this.generateReqsList.bind(this)
   }
 
-  async componentWillMount(){
-
-
-  }
 
   generateReqsList(){
     let reqs = []
@@ -25,11 +22,10 @@ class CreateOverlay extends Component {
    return reqs
   }
 
-
   async create(){
-    console.log('hey')
     let reqs = this.generateReqsList()
     console.log(reqs)
+    let escrowSuccess = true
     try {
       await transferEscrow(
         this.props.web3, 
@@ -38,20 +34,30 @@ class CreateOverlay extends Component {
         this.props.id
         )
     } catch(e){
+      escrowSuccess = false
+      console.log('error submitting prize to escrow')
+      this.props.toggleOverlay()
+      window.toastProvider.addMessage('Transaction Failed', {
+        secondaryMessage: 'You may not own the selcted token.',
+        variant: 'failure',
+      })
     }
-    try{
-      await createQuest(
-        this.props.web3, 
-        this.props.network,
-        this.props.account,
-        this.props.address,
-        this.props.id,
-        this.props.amount,
-        this.props.nft,
-        reqs
-      )
-    }catch (e){
-      console.log(e)
+    if(escrowSuccess){
+      try{
+        await createQuest(
+          this.props.web3, 
+          this.props.network,
+          this.props.account,
+          this.props.address,
+          this.props.id,
+          this.props.amount,
+          this.props.nft,
+          reqs
+        )
+      }catch (e){
+        console.log(e)
+        this.props.toggleOverlay()
+      }
     }
   }
 
