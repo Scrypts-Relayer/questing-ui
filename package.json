@@ -11,6 +11,7 @@
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.8",
+    "react-step-wizard": "^5.1.0",
     "react-typing-effect": "^2.0.2",
     "react-web3": "^1.2.0",
     "reactstrap": "^7.0.2",

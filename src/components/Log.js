@@ -2,7 +2,7 @@ import React, { Component} from "react";
 import '../App.scss'
 import QuestCard from './QuestCard'
 import CompleteOverlay from './CompleteOverlay'
-//import {mintToMe, transferEscrow, checkOwne, checkApproval, checkOwner} from '../services/testing'
+import {mintToMe, transferEscrow, checkOwne, checkApproval, checkOwner} from '../services/testing'
 import ReactLoading from 'react-loading';
 
 
@@ -21,11 +21,11 @@ class Log extends Component {
   }
 
   async componentWillMount(){
-    let id = 780;
-    // await checkApproval(this.props.web3, this.props.account, id)
+    let id = 2234;
+    //await checkApproval(this.props.web3, this.props.account, id)
     //await checkOwner(this.props.web3, id)
     //await mintToMe(this.props.web3, this.props.account, id)
-    //await transferEscrow(this.props.web3, this.props.account, id)
+    await transferEscrow(this.props.web3, this.props.account, id)
     //await completeQuest(this.props.web3, this.props.network, this.props.account, 4, [675]) // 678
     //let bals = await getBalancesForAll(this.props.network, this.props.account)
     //let questRes = await getQuests(this.props.web3, this.props.network, this.props.account);

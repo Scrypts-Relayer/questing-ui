@@ -1,18 +1,19 @@
 import React, { Component} from "react";
 import '../App.scss'
-import DropDownList from './DropDownList.js'
 import SelectedReqItem from './SelectedReq.js'
 import nfts from '../assets/erc721s.js'
 import erc20s from '../assets/erc20s.js'
-import cat from '../assets/img/ck.png'
-import CreateOverlay from "./CreateOverlay";
-import { ToastMessage, Button } from 'rimble-ui'
+import CreatePage1 from './CreatePage1'
+import CreatePage2 from './CreatePage2'
+import CreatePage3 from "./CreatePage3";
+import CreatePage4 from './CreatePage4'
+import {ToastMessage} from 'rimble-ui'
 
 class Create extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      step : 2  ,
+      step : 1,
       title : '',
       selectedReqs : new Set(),
       selectedPrize : 'KITTYR',
@@ -27,10 +28,11 @@ class Create extends Component {
       overlay : false
     };
     this.add = this.add.bind(this);
+    this.showError = this.showError.bind(this)
     this.remove = this.remove.bind(this)
     this.togglePage = this.togglePage.bind(this)
-    this.completeQuest = this.completeQuest.bind(this)
-    this.toggleOverlay = this.toggleOverlay.bind(this)
+    this.updateSelectedPrize = this.updateSelectedPrize.bind(this)
+    this.populateSelectedReqs = this.populateSelectedReqs.bind(this)
   }
 
   async componentWillMount() {
@@ -77,49 +79,6 @@ class Create extends Component {
     }
   }
 
-  displayPrizes(){
-    return(
-      <div className="prizeGrid">
-        {this.display721s()}
-        {this.display20s()}
-      </div>
-    )
-  }
-
-  display721s(){
-    return (
-      Object.entries(nfts[this.props.network]).map((item)=>{
-        return (
-          <div 
-            className={this.state.selectedPrize === item[0] ? "prizeCard prizeCardSelected" : "prizeCard"} 
-            key={item[0]} 
-            onClick={(event)=>{this.updateSelectedPrize(item[0])}}
-          >
-            <p className="prizeTokenTicker">{item[1].name}</p>
-            <img alt={''} src={cat} id="prizePic" />
-          </div>
-        )
-      })
-    )
-  }
-
-  display20s(){
-    return (
-      Object.entries(erc20s[this.props.network]).map((item)=>{
-        return (
-          <div 
-            className={this.state.selectedPrize === item[0] ? "prizeCard prizeCardSelected" : "prizeCard"} 
-            key={item[0]} 
-            onClick={(event)=>{this.updateSelectedPrize(item[0])}}
-          >
-            <p className="prizeTokenTicker">{item[0]}</p>
-            <img alt={''} src={cat} id="prizePic" />
-          </div>
-        )
-      })
-    )
-  }
-
   add(key){
     //if theres 2 and about to be 3
     let show = true;
@@ -148,75 +107,16 @@ class Create extends Component {
     })
   }
 
-  handleNextPage(){
-
-  }
-
-  validatePageOne() {
-    //reset the state
-    this.setState({
-      titleError : false,
-      reqError : false
+  showError(message){
+    window.toastProvider.addMessage('Transaction Failed', {
+      secondaryMessage: message,
+      variant: 'failure',
     })
-    let valid = true
-    if (this.state.selectedReqs.size === 0){
-      this.setState({
-        reqError : true
-      })
-      valid = false
-    }
-    if(this.state.title===''){
-      this.setState({
-        titleError : true
-      })
-      valid = false
-    }
-    return valid
   }
 
-  validatePageTwo(){
-    let valid = true;
+  togglePage(page){
     this.setState({
-      amtError : false
-    })
-    if(this.state.amount < 1){
-      this.setState({
-        amtError : true
-      })
-      valid = false;
-    }
-    if(this.state.tokenId < 0 || this.state.tokenId === ''){
-      valid = false;
-    }
-    return valid
-  }
-
-  togglePage(){
-      if(this.state.step===1 ){
-        if(this.validatePageOne()){
-          this.setState({
-            step : 2
-          })
-        }
-      } else {
-        this.setState({
-          step : 1
-        })
-      }
-  }
-
-  completeQuest(){
-    if(this.validatePageTwo()){
-      this.setState({
-        overlay : true
-      })
-
-    }
-  }
-
-  toggleOverlay() { 
-    this.setState({
-      overlay : !this.state.overlay
+      step : page
     })
   }
 
@@ -233,111 +133,109 @@ class Create extends Component {
   selectPage() {
     if(this.state.step === 1){
       return (
-        <div className="createPage">
-          <div className="headerTextCreate">
-            <h6 style={{marginRight:"10px"}}>Create New Quest</h6>
-            <h3>Step {this.state.step} of 2</h3>
-          </div>
-          <div className="createCard">
-            {this.state.titleError ? <h3 className="errorText" id="titleError">Title must not be empty!</h3> : ''}   
-            <div className="createRow">
-              <h3>Quest Title</h3>
-              <input 
-                className="createInput" 
-                id="titleInput" 
-                onChange={(event) => {this.setState({title : event.target.value})}}
-                value={this.state.title}
-              />
-            </div>
-          </div>
-          <div className="createCard" id="reqSelect">
-          {this.state.reqError ? <h3 className="errorText" id="reqError">You must select at least 1 requirement!</h3> : ''}   
-            <div className="createRow">
-              <h3 style={{marginBottom:'20px'}}>Quest Requirements (Max 3)</h3>
-            </div>
-              {this.populateSelectedReqs()}
-            <div className="createRow">
-              {this.state.showDropwDown ? <DropDownList add={this.add} network={this.props.network}/> : ''}
-            </div>
-            <hr id="createRule"/>
-            <p className="bottomText">Users must submit each item in order to complete the quest.</p>
-          </div>
-
-          <div className="submitWrapper">
-            <div className="pageSubmit" id="page1Submit" onClick={this.togglePage}>
-              <h6 className="whiteText">Next Page</h6>
-            </div>
-          </div>
-        </div>
+        <CreatePage1 
+          populateSelectedReqs = {this.populateSelectedReqs}
+          add = {this.add}
+          network = {this.props.network}
+          togglePage = {this.togglePage}
+          reqError = {this.state.reqError}
+          showDropwDown = {this.state.showDropwDown}
+          titleError = {this.state.titleError}
+          selectedReqs = {this.state.selectedReqs}
+        />
       )
-    } else {
+    } 
+    if(this.state.step === 2){
       return (
-        <div className="createPage">
-        <ToastMessage.Provider ref={node => window.toastProvider = node} />
-          {this.state.overlay ? 
-              <CreateOverlay 
-                network={this.props.network}
-                web3={this.props.web3}
-                account={this.props.account}
-                toggleOverlay={this.toggleOverlay} 
-                prizeKey = {this.state.selectedPrize}
-                id = {this.state.tokenId}
-                amount = {this.state.amount}
-                nft = {this.state.nftSelected}
-                address={this.getAddress()}
-                reqs={this.state.selectedReqs}
-              /> 
-              : ''}
-          <div className="headerTextCreate">
-            <div className="" onClick={this.togglePage} id="previousButton">
-              <h4 className="">{'<- Previous'}</h4>
-            </div>
-            <h6 style={{marginRight:"20px"}}>Create New Quest</h6>
-            <h3>Step {this.state.step} of 2</h3>
-          </div>
-          <div className="prizeSelection">
-            <h6>Insert Prize</h6>
-            <p className="bottomText">When you select your prize, it will be hed in escrow while the quest is open.</p>
-            {this.displayPrizes()}
-            {erc20s[this.props.network].hasOwnProperty(this.state.selectedPrize) ? 
-              <div className="amountRow">
-                {this.state.amtError ? <h3 className="errorText" id="amtError">You must enter an amount great than 0.</h3> : ''}
-                <h4 style={{marginRight:"20px"}}>Amount</h4>
-                <input 
-                  className="createInput" 
-                  value={this.state.amount}
-                  type="text" 
-                  onKeyUp={(event)=>{this.setState({amount : event.target.value.replace(/[^\d]+/, '')})}}
-                  onChange={(event)=>{this.setState({amount : event.target.value})}}
-                />
-              </div>
-            : 
-            <div className="amountRow">
-              <h5 id="nftWarning">Enter the id of the NFT that you own</h5>
-              <h4 style={{marginRight:"20px"}}>Prize Token Id</h4>
-                <input 
-                className="createInput" 
-                value={this.state.tokenId}
-                type="text" 
-                onKeyUp={(event)=>{this.setState({tokenId : event.target.value.replace(/[^\d]+/, '')})}}
-                onChange={(event)=>{this.setState({tokenId : event.target.value})}}
-              />
-            </div>  
-          }
-          </div>
-          <div className="submitWrapper">
-            <div className="pageSubmit" onClick={this.completeQuest} id="page2Submit">
-              <h6 className="whiteText">Complete</h6>
-            </div>
-          </div>
-        </div>
+        <CreatePage2 
+          network={this.props.network}
+          display721s = {this.display721s}
+          display20s = {this.display20s}
+          amtError = {this.state.amtError}
+          amount = {this.state.amount}
+          instance = {this}
+          selectedPrize = {this.state.selectedPrize}
+          updateSelectedPrize={this.updateSelectedPrize}
+          tokenId={this.state.tokenId}
+          togglePage = {this.togglePage}
+        />
       )
     }
-  }
+    if (this.state.step === 3){
+      return (
+          <CreatePage3 
+            network={this.props.network}
+            web3={this.props.web3}
+            account={this.props.account}
+            prizeKey = {this.state.selectedPrize}
+            id = {this.state.tokenId}
+            togglePage = {this.togglePage}
+            amount = {this.state.amount}
+            nft = {this.state.nftSelected}
+            address={this.getAddress()}
+            reqs={this.state.selectedReqs}
+            showError = {this.showError}
+          /> 
+      ) 
+    } 
+    if (this.state.step === 4){
+      return (
+        <CreatePage4 
+          network={this.props.network}
+          web3={this.props.web3}
+          account={this.props.account}
+          prizeKey = {this.state.selectedPrize}
+          id = {this.state.tokenId}
+          togglePage = {this.togglePage}
+          amount = {this.state.amount}
+          nft = {this.state.nftSelected}
+          address={this.getAddress()}
+          reqs={this.state.selectedReqs}
+          showError = {this.showError}
+        /> 
+      )
+    }
+  } 
 
   render() {
     return (
-      this.selectPage()
+      <div className="createBucket">
+        <div className="createLeft">
+          <p className="createQuestText">Create A Quest</p>
+          <div className="wizardBox">
+            <div className="line" />
+            <div className="wizardRow">
+            <div className={this.state.step === 1 ? "wizardCirle activeWizard" : 'wizardCircle'} />
+              <div className={this.state.step === 1 ? "wizardStep activeWizardText" : 'wizardStep'}>
+                Select Requirements
+              </div>
+            </div>
+            <div className="wizardRow">
+              <div className={this.state.step === 2 ? "wizardCirle activeWizard" : 'wizardCircle'} />
+              <div className={this.state.step === 2 ? "wizardStep activeWizardText" : 'wizardStep'}>
+                Select Prize
+              </div>
+            </div>
+            <div className="wizardRow">
+            <div className={this.state.step === 3 ? "wizardCirle activeWizard" : 'wizardCircle'} />
+              <div className={this.state.step === 3 ? "wizardStep activeWizardText" : 'wizardStep'}>
+                Lock Prize In Escrow
+              </div>
+            </div>
+            <div className="wizardRow">
+            <div className={this.state.step === 4 ? "wizardCirle activeWizard" : 'wizardCircle'} />
+              <div className={this.state.step === 4 ? "wizardStep activeWizardText" : 'wizardStep'}>
+                Finalize
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="createRight">
+          <ToastMessage.Provider ref={node => window.toastProvider = node} />
+          {this.selectPage()}
+        </div>
+      </div>
+      
     );
   }
 }

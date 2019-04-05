@@ -13,7 +13,6 @@ import { withWeb3Ctx } from "../contexts/Web3Context";
 export default class App extends Component {
   render() {
     return (
-      
         <Router>
           <Fragment>
             <div className="App">
@@ -21,6 +20,8 @@ export default class App extends Component {
               <Route path="/" exact component={withWeb3Ctx(Landing)} />
               <Web3Container>
                 <Route path="/log" exact component={withWeb3Ctx(Log)} />
+              </Web3Container>
+              <Web3Container>
                 <Route path="/create" component={withWeb3Ctx(Create)} />
               </Web3Container>
               <Route path="/faq/" component={Faq} />

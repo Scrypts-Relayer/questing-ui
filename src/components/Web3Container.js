@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { getProvider } from "../services/web3Service";
 import { Web3Ctx } from "../contexts/Web3Context";
 import signin from '../assets/img/signin.png'
-import {getBalancesForAll, getQuests, completeQuest} from '../services/questService'
+import {getBalancesForAll, getQuests} from '../services/questService'
 
 class Web3Container extends React.Component {
   state = {
@@ -17,12 +17,19 @@ class Web3Container extends React.Component {
     quests : [],
     bals : []
   };
-
+ 
   async componentWillMount() {
     await this.checkAccounStatus();
+    console.log(this.state.account + " is state")
     await this.subscribeToAccountChange(this.checkAccounStatus);
-    let bals = await getBalancesForAll(this.state.network, this.state.account)
-    let questRes = await getQuests(this.state.web3, this.state.network, this.state.account);
+    let bals = []
+    let questRes = []
+    try{
+      bals = await getBalancesForAll(this.state.network, this.state.account)
+      questRes = await getQuests(this.state.web3, this.state.network, this.state.account);
+    } catch(e){
+      console.log('couldnt load bc data')
+    }
     this.setState({ 
       isLoading: false,
       quests : questRes,

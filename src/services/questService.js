@@ -50,8 +50,16 @@ export async function getBalancesForAll(network, account){
   }
   // get all ERC721 assets owned by current account
   let query = 'https://rinkeby-api.opensea.io/api/v1/assets?owner='+account+'&api_key=e4f5e442e7664e3eb56fd7c415cf6128'
-  let res = await fetch(query).catch((err) => {alert('could get balance')})
-  let assetData = await res.json()
+  let res = false
+  try {
+    res = await fetch(query)
+  } catch(e){
+    console.log('error in open sea call')
+  }
+  let assetData = {}
+  if (res){
+    assetData = await res.json()
+  }
   // for every token in the list, get user's balance
   
   let assetSymbol;
@@ -65,7 +73,7 @@ export async function getBalancesForAll(network, account){
   }
 
   //for testing purposes
-  balanceData['0x7bcD4667086d271070Ae32D92782D1e692a239EA'.toLowerCase()] = [280]
+  balanceData['0x7bcD4667086d271070Ae32D92782D1e692a239EA'.toLowerCase()] = [2234]
 
   return balanceData
 }
@@ -148,19 +156,13 @@ export async function createQuest(
   prizeIsNFT,
   requirementsList) {
     let ourContract = await getContract(web3, CONTRACT[network].abi,CONTRACT[network].address)
-    console.log(ourContract)
-    console.log(requirementsList)
-    ourContract.methods.createQuest(
+    await ourContract.methods.createQuest(
     prizeTokenAddress.toString(),
     prizeTokenId,
     prizeTokenAmount,
     prizeIsNFT,
     requirementsList
-   ).send({
-    from : account
-   }, function(err, res){
-     handleErr(err, 'in creating the quest!')
-  });
+   ).send({from : account})
 }
 
 export async function cancelQuest(account, ourContract, questId) {
@@ -190,11 +192,13 @@ export async function completeQuest(web3, network, account, questId, submittedTo
 export async function checkSubmission(web3, reqAddress, bals){
   // alert('loading - awaiting `checkSubmission()` in `questService.js`')
   if(bals.hasOwnProperty(reqAddress.toLowerCase())){
+    console.log('has item')
     let balance = bals[reqAddress.toLowerCase()]
     if (balance.length === 0){
       return false
     }
     for (let token in bals[reqAddress.toLowerCase()]){
+      console.log('in here')
       let nft = bals[reqAddress.toLowerCase()][token]
       try {
         //now check if we are approved

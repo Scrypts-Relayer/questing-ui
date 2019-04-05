@@ -2,7 +2,6 @@ import React, { Component} from "react";
 import '../App.scss'
 import icon from '../assets/img/ck.png'
 import closeIcon from '../assets/img/letter-x.png'
-import { Modal } from 'rimble-ui'
 import {getName, checkSubmission, completeQuest} from '../services/questService'
 
 class CompleteOverlay extends Component {
@@ -73,11 +72,12 @@ class CompleteOverlay extends Component {
   }
 
 
-   getReqArrayForCompletion(){
+  getReqArrayForCompletion(){
     let reqArray = []
     this.props.quest.reqs.map((key, i)=>{
       let id = this.state.submittedKey[key.toLowerCase()]
       reqArray.push(id)
+      return true
     })
     return reqArray
   }
@@ -94,13 +94,13 @@ class CompleteOverlay extends Component {
   handleCompleteQuest = async () => {
     if(!this.state.allSubmitted){
       
-    }else {
-      try {
-        let ls = this.getReqArrayForCompletion()
-        await completeQuest(this.props.web3, this.props.network, this.props.account, this.props.quest.id, ls)
-      } catch(err) {
-        
-      }
+    } else {
+        try {
+          let ls = this.getReqArrayForCompletion()
+          await completeQuest(this.props.web3, this.props.network, this.props.account, this.props.quest.id, ls)
+        } catch(err) {
+          
+        }
     }
   }
 
