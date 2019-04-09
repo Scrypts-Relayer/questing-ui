@@ -16,6 +16,10 @@ class CreatePage3 extends Component {
   
   }
 
+  componentDidMount(){
+    window.scrollTo(0, 0)
+  }
+
   async sendPrize(){
     let escrowSuccess = true
     this.setState({
@@ -72,13 +76,13 @@ class CreatePage3 extends Component {
               <h3>Token Amount : {this.props.amount}</h3>}
             </div>
             <div className="createButtonGroup">
-              <div className="createButtonOverlay whiteText" onClick={this.sendPrize}>
+              <div className="button" onClick={this.sendPrize}>
                 Send Prize To Escrow
               </div> 
-              <div className="cancelButtonOverlay whiteText" onClick={this.handleSkip}>
+              <div className="button" onClick={this.handleSkip}>
                 Skip
               </div>
-              <div className="cancelButtonOverlay whiteText" onClick={this.handleCancel}>
+              <div className="button" onClick={this.handleCancel}>
                 Cancel
               </div>
             </div>

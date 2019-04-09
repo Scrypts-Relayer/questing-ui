@@ -36,7 +36,7 @@ class QuestCard extends Component {
           <div className="questReqContainer">
             {this.generateRequirements()}
           </div>
-          <div className="questSubmit" onClick={(e) => this.props.toggleOverlay(this.props.quest)}>
+          <div className="button" onClick={(e) => this.props.toggleOverlay(this.props.quest)}>
             <h4 className="whiteText">Complete</h4>
           </div>
           <h4 id="questIdText">questID : {this.props.id}</h4>

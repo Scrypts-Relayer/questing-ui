@@ -14,6 +14,10 @@ class CreatePage1 extends Component {
     this.checkForFields = this.checkForFields.bind(this)
   }
 
+  componentDidMount(){
+    window.scrollTo(0, 0)
+  }
+
   checkForFields(){
     if(this.props.selectedReqs.size === 0){
       return false
@@ -62,8 +66,7 @@ class CreatePage1 extends Component {
 
           </div>
           <div className="submitWrapper">
-             
-            <div className={!this.checkForFields() ? 'pageSubmit inactiveButton' : 'pageSubmit'} id="page1Submit" onClick={this.handleNext}>
+            <div className={!this.checkForFields() ? 'button inactiveButton' : 'button'} id="page1Submit" onClick={this.handleNext}>
               <h6 className="whiteText">Next</h6>
             </div>
           </div>

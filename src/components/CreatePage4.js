@@ -14,6 +14,10 @@ class CreatePage4 extends Component {
     this.handleCancel = this.handleCancel.bind(this)
   }
 
+  componentDidMount(){
+    window.scrollTo(0, 0)
+  }
+
   generateReqsList(){
     let reqs = []
     for (let item of this.props.reqs){
@@ -46,8 +50,6 @@ class CreatePage4 extends Component {
       this.props.togglePage(2)
     }
     //success
-    alert('created')
-
   }
 
   handleCancel(){
@@ -72,10 +74,10 @@ class CreatePage4 extends Component {
                 your quest you will be given the requirement tokens. Happy questing. 
                 </h3>
                 <div className="createButtonGroup" id="forthPage">
-                  <div className="createButtonOverlay whiteText" onClick={this.createQuest}>
+                  <div className="button" onClick={this.createQuest}>
                     Create Quest
                   </div>
-                  <div className="cancelButtonOverlay whiteText" onClick={this.handleCancel}>
+                  <div className="button" onClick={this.handleCancel}>
                     Cancel
                   </div>
                 </div>

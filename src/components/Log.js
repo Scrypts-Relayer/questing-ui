@@ -21,11 +21,12 @@ class Log extends Component {
   }
 
   async componentWillMount(){
-    let id = 2234;
+    window.scrollTo(0, 0)
+    let id = 21002;
     //await checkApproval(this.props.web3, this.props.account, id)
     //await checkOwner(this.props.web3, id)
     //await mintToMe(this.props.web3, this.props.account, id)
-    await transferEscrow(this.props.web3, this.props.account, id)
+    //await transferEscrow(this.props.web3, this.props.account, id)
     //await completeQuest(this.props.web3, this.props.network, this.props.account, 4, [675]) // 678
     //let bals = await getBalancesForAll(this.props.network, this.props.account)
     //let questRes = await getQuests(this.props.web3, this.props.network, this.props.account);

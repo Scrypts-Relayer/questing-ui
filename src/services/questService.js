@@ -13,13 +13,8 @@ import fakeNFT from '../assets/fakeNFT'
 
 
 export async function setApproval(_web3, network, address, id, account) {
-  try {
-    let token_contract = await getContract(_web3, abi721, address)
-    await token_contract.methods.approve(CONTRACT[network].address, id).call({from : account})
-    console.log(`Successful approval for token id ${id}!`);
-  } catch (err) {
-    console.log(err);
-  }
+  let token_contract = await getContract(_web3, abi721, address)
+  await token_contract.methods.approve(CONTRACT[network].address, id).send({from : account})
 }
 
 export async function setApprovalFor20(_web3, network, address, id, account) {
@@ -39,7 +34,6 @@ export async function getContract(_web3, abi, address) {
     console.log(err);
   }
 }
-
 
 export async function getBalancesForAll(network, account){
   let balanceData = {}
@@ -61,7 +55,6 @@ export async function getBalancesForAll(network, account){
     assetData = await res.json()
   }
   // for every token in the list, get user's balance
-  
   let assetSymbol;
   let assetAddres;
   for (let key in assetData.assets) {
@@ -71,27 +64,18 @@ export async function getBalancesForAll(network, account){
       balanceData[assetAddres].push(parseInt(assetData.assets[key].token_id));
     }
   }
-
   //for testing purposes
-  balanceData['0x7bcD4667086d271070Ae32D92782D1e692a239EA'.toLowerCase()] = [2234]
-
+  balanceData['0x7bcD4667086d271070Ae32D92782D1e692a239EA'.toLowerCase()] = [21002]
   return balanceData
 }
 
 export function addr2Bal(orderedReqs, submittedKey) {
-  console.log('THIS:', orderedReqs)
-  // console.log('THIS:', balances)
-  console.log('THIS:', submittedKey)
   let ans = []
   for (let req=0;req<orderedReqs.length;req++) {
     ans.push(submittedKey[orderedReqs[req]]);
   }
   return ans
   // return orderedReqs.map((val) => submittedKey[val])
-}
-
-export async function getImageUrl(address){
-
 }
 
 export function getName(address, network){
@@ -190,15 +174,12 @@ export async function completeQuest(web3, network, account, questId, submittedTo
 }
 
 export async function checkSubmission(web3, reqAddress, bals){
-  // alert('loading - awaiting `checkSubmission()` in `questService.js`')
   if(bals.hasOwnProperty(reqAddress.toLowerCase())){
-    console.log('has item')
     let balance = bals[reqAddress.toLowerCase()]
     if (balance.length === 0){
       return false
     }
     for (let token in bals[reqAddress.toLowerCase()]){
-      console.log('in here')
       let nft = bals[reqAddress.toLowerCase()][token]
       try {
         //now check if we are approved

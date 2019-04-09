@@ -19,6 +19,10 @@ class CreatePage2 extends Component {
     this.checkForFields = this.checkForFields.bind(this)
   }
 
+  componentDidMount(){
+    window.scrollTo(0, 0)
+  }
+
   display721s(){
     return (
       Object.entries(nfts[this.props.network]).map((item)=>{
@@ -125,10 +129,10 @@ class CreatePage2 extends Component {
         }
         </div> 
         <div className="submitWrapper">
-          <div className="pageSubmit" onClick={this.handleNext} id="page2Submit">
+          <div className="button" onClick={this.handleNext} id="page2Submit">
             <h6 className="whiteText">Next</h6>
           </div>
-          <div className="pageSubmit" id="page1Back" onClick={this.handleBack}>
+          <div className="button" id="page1Back" onClick={this.handleBack}>
             <h6 className="whiteText">Back</h6>
           </div>
         </div>

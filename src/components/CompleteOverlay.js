@@ -1,8 +1,9 @@
 import React, { Component} from "react";
 import '../App.scss'
 import icon from '../assets/img/ck.png'
+import {ToastMessage} from 'rimble-ui'
 import closeIcon from '../assets/img/letter-x.png'
-import {getName, checkSubmission, completeQuest} from '../services/questService'
+import {getName, checkSubmission, setApproval, completeQuest} from '../services/questService'
 
 class CompleteOverlay extends Component {
 
@@ -10,12 +11,68 @@ class CompleteOverlay extends Component {
     super(props);
     this.state = {
       submittedKey :  {},
-      allSubmitted : true
+      allSubmitted : true,
+      processingSubmission : false
     };
   }
 
   async componentWillMount(){
-    await this.checkIfSubmitted()
+    await this.checkSubmissionStatus()
+  }
+
+
+  handleIdChange(e, id){
+    this.setState({
+      ['inputId' + id] : e.target.value
+    })
+  }
+
+  submitOne = async (addr, id) => {
+    let success = true
+    let idtext = 'inputId'+id
+    if (this.state[idtext] === undefined){
+      console.log('id is undefined')
+      success = false
+    } else {
+      this.showProcessing('Setting approval for your token.')
+      try {
+        await setApproval(
+          this.props.web3, 
+          this.props.network, 
+          addr,
+          this.state[idtext],
+          this.props.account
+        )
+      } catch(e){
+        this.showError('Error submitting token to escrow.')
+        success = false
+      }
+    }if (success){
+      console.log('we did it we did it ')
+      this.showSuccess('Your token has been submitted to Scrypts.')
+    }
+  }
+
+  showError(message){
+    window.toastProvider.addMessage('Transaction Failed', {
+      secondaryMessage: message,
+      variant: 'failure',
+    })
+  }
+
+  showSuccess(message){
+    window.toastProvider.addMessage('Success!', {
+      secondaryMessage: message,
+      variant: 'success',
+    })
+  }
+
+  showProcessing(message){
+    window.toastProvider.addMessage('Processing...', {
+      secondaryMessage: message,
+      actionText: 'Check',
+      variant: 'processing',
+    })
   }
 
    getReqs(){
@@ -27,8 +84,22 @@ class CompleteOverlay extends Component {
           <div className="ctRow" key={i}>
             <img src={icon} alt={''} id="questReqTableImg"/>
             <h3 className="greyText" id="completeReqTitle">{name}</h3>
-            {this.state.submittedKey[key] !== false ? <h3 className="greyText" id="tokenIdTextOverlay">tokenId: {this.state.submittedKey[key]}</h3> :  <input className="tokenIdInputComplete" placeholder="tokenId"/>}
-            <div className="submitTokenIdNum" id={this.state.submittedKey[key] !== false ? 'inactive' : ''} onClick={(key) => this.submitOne(key)}>
+            {this.state.submittedKey[key] !== false ?
+              <h3 className="greyText" id="tokenIdTextOverlay">
+                tokenId: {this.state.submittedKey[key]}
+              </h3> 
+              :  
+              <input
+                className="tokenIdInputComplete" 
+                placeholder="tokenId" 
+                onChange={(e) => this.handleIdChange(e, i)}
+              />
+            }
+            <div 
+              className="button smallButton" 
+              id={this.state.submittedKey[key] !== false ? 'inactive' : ''} 
+              onClick={(e) => this.submitOne(key, i, e)}
+            >
               <h5 className="whiteText">Submit</h5>
             </div>
             <h5 className="greyText" id="submitStatus">{this.state.submittedKey[key] !== false ? 'Submitted' : 'Unsubmitted'}</h5>
@@ -38,9 +109,9 @@ class CompleteOverlay extends Component {
     )
   }
   // during componentDidMount, called once
-  async checkIfSubmitted(){ 
+  async checkSubmissionStatus(){ 
     let submittedKey = {}
-    this.props.quest.reqs.map(async (key, i)=>{
+    this.props.quest.reqs.map(async (key)=>{
       let res;
       key = key.toLowerCase()
       try {
@@ -63,15 +134,6 @@ class CompleteOverlay extends Component {
     })
   }
 
-  checkIfSubmittedAfterLoad(){
-    let allSubmitted = false;
-    this.props.quest.reqs.map(async (key, i)=>{
-      allSubmitted = allSubmitted && i;
-      this.setState({ allSubmitted })
-    })
-  }
-
-
   getReqArrayForCompletion(){
     let reqArray = []
     this.props.quest.reqs.map((key, i)=>{
@@ -80,15 +142,6 @@ class CompleteOverlay extends Component {
       return true
     })
     return reqArray
-  }
-
-  submitOne = async (addr) => {
-    try {
-      await checkSubmission(this.props.web3, addr, this.props.balances);
-      this.checkIfSubmittedAfterLoad();
-    } catch(err) {
-      // alert('ERROR IN submitOne(): ', err)
-    }
   }
 
   handleCompleteQuest = async () => {
@@ -101,12 +154,14 @@ class CompleteOverlay extends Component {
         } catch(err) {
           
         }
+        console.log(' you completed it idiot')
     }
   }
 
   render() {
     return (
       <div className="CompleteOverlay">
+        <ToastMessage.Provider ref={node => window.toastProvider = node} />
         <div className="blurred" onClick={this.props.toggleOverlay}>
         </div>
         <div className="overLayBox">
@@ -122,9 +177,11 @@ class CompleteOverlay extends Component {
             </div>
             {this.getReqs()}
           </div>
-          <div className="completeQuestOverlayButton"
-               id={this.state.allSubmitted ? '' : 'inactive'}
-               onClick={() => this.handleCompleteQuest()}>
+          <div 
+            className="completeQuestOverlayButton button"
+            id={this.state.allSubmitted ? '' : 'inactive'}
+            onClick={() => this.handleCompleteQuest()}
+          >
             <h5 className="whiteText">Complete</h5>
           </div>
         </div>

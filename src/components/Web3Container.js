@@ -20,7 +20,6 @@ class Web3Container extends React.Component {
  
   async componentWillMount() {
     await this.checkAccounStatus();
-    console.log(this.state.account + " is state")
     await this.subscribeToAccountChange(this.checkAccounStatus);
     let bals = []
     let questRes = []

@@ -35,8 +35,8 @@ class Create extends Component {
     this.populateSelectedReqs = this.populateSelectedReqs.bind(this)
   }
 
-  async componentWillMount() {
-  
+  componentDidMount() {
+    window.scrollTo(0, 0)
   }
 
   populateSelectedReqs(){
