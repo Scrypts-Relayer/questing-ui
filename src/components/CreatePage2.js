@@ -94,7 +94,7 @@ class CreatePage2 extends Component {
         </div> 
         : ''}
         <div className="prizeSelection">
-          <p className="bottomText">When you select your prize, it will be hed in escrow while the quest is open.</p>
+          <p className="bottomText">When you select your prize, it will be held in escrow while the quest is open.</p>
           <div className="prizeGrid">
             {this.display721s()}
             {this.display20s()}
